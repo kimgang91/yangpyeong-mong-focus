@@ -151,7 +151,7 @@
           <thead><tr class="text-left text-xs text-slate-500 border-b border-slate-200">
             <th class="py-2 px-2 w-[46px]">1세트</th><th class="py-2 px-2">상품 · 구매 링크</th><th class="py-2 px-2 w-[100px]">구분</th><th class="py-2 px-2 w-[88px]">상태</th>
             <th class="py-2 px-2 text-right w-[104px]">단가</th><th class="py-2 px-2 text-right w-[58px]">수량</th>
-            <th class="py-2 px-2 text-right w-[112px]">금액</th><th class="py-2 px-2 w-[180px]">메모</th><th class="w-[34px] no-print"></th>
+            <th class="py-2 px-2 text-right w-[112px]">금액</th><th class="py-2 px-2 w-[180px]">메모</th><th class="w-[40px] no-print text-center text-[11px] font-normal">순서</th>
           </tr></thead>
           <tbody id="gear-rows"></tbody>
           <tfoot><tr class="border-t-2 border-slate-200">
@@ -543,7 +543,13 @@ function renderGear() {
       <td class="py-2 px-1"><input class="${gIn} text-right tabular-nums" data-bind="gearList|${i}|qty" data-num inputmode="numeric" value="${fmt(r.qty)}"></td>
       <td class="py-2 px-1"><input class="${gIn} text-right tabular-nums font-semibold ${r.amt != null ? 'text-amber-700' : ''}" data-bind="gearList|${i}|amt" data-num inputmode="numeric" value="${fmt(rowAmt(r))}" title="${r.amt != null ? '직접 입력한 금액' : '단가 × 수량'}"></td>
       <td class="py-2 px-1"><input class="${gIn} text-[12px] ${String(r.note).startsWith('⚠') ? 'text-rose-600' : 'text-slate-500'}" data-bind="gearList|${i}|note" value="${esc(r.note)}" placeholder="메모"></td>
-      <td class="py-2 px-1 text-right no-print"><button class="h-7 w-7 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50" data-act="gear-del" data-key="gearList" data-j="${i}" title="품목 삭제">✕</button></td>
+      <td class="py-2 px-1 no-print">
+        <div class="flex flex-col items-center gap-0.5">
+          <button class="h-6 w-7 rounded-md text-slate-400 hover:text-slate-800 hover:bg-slate-100 disabled:opacity-20 disabled:hover:bg-transparent" data-act="gear-up" data-key="gearList" data-j="${i}" title="위로" ${i === 0 ? 'disabled' : ''}>▲</button>
+          <button class="h-6 w-7 rounded-md text-slate-400 hover:text-slate-800 hover:bg-slate-100 disabled:opacity-20 disabled:hover:bg-transparent" data-act="gear-down" data-key="gearList" data-j="${i}" title="아래로" ${i === S.gearList.length - 1 ? 'disabled' : ''}>▼</button>
+          <button class="h-6 w-7 rounded-md text-slate-300 hover:text-rose-600 hover:bg-rose-50" data-act="gear-del" data-key="gearList" data-j="${i}" title="품목 삭제">✕</button>
+        </div>
+      </td>
     </tr>`; }).join('') : '<tr><td colspan="9" class="py-4 text-center text-xs text-slate-400">품목이 없습니다</td></tr>';
   updateGearTotals();
 }
@@ -619,6 +625,15 @@ document.addEventListener('click', e => {
   else if (btn.dataset.act === 'cost-add') S[key].push({ name:'', desc:'', amt:0 });
   else if (btn.dataset.act === 'cost-reset') S[key] = clone(DEFAULTS[key]);
   else if (btn.dataset.act === 'gear-del') S.gearList.splice(j, 1);
+  else if (btn.dataset.act === 'gear-up' || btn.dataset.act === 'gear-down') {
+    const to = btn.dataset.act === 'gear-up' ? j - 1 : j + 1;
+    if (to < 0 || to >= S.gearList.length) return;
+    [S.gearList[j], S.gearList[to]] = [S.gearList[to], S.gearList[j]];
+    renderKey(key); queueSave(key, 300);
+    const row = document.querySelector(`[data-gear-row="${to}"]`);
+    row?.classList.add('flash'); row?.querySelector(`[data-act="${btn.dataset.act}"]:not([disabled])`)?.focus();
+    return;
+  }
   else if (btn.dataset.act === 'gear-add') S.gearList.push({ name:'', kind:'f', price:0, qty:1, amt:null, note:'', picked:false, status:'review', url:'', image:'' });
   else if (btn.dataset.act === 'gear-reset') { if (!confirm('장비 리스트를 처음 값으로 되돌릴까요? 모두의 화면에 반영됩니다.')) return; S.gearList = clone(DEFAULTS.gearList); }
   renderKey(key);
