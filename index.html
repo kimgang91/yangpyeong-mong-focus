@@ -132,7 +132,7 @@
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
         <div>
           <h2 class="font-bold text-lg flex items-center gap-2">🛋 내부 장비 리스트 <span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span></h2>
-          <p class="text-xs text-slate-500 mt-0.5">시뮬레이션 기본값(2026-10-07) 기준 · 김경수 구매 리스트(쿠팡 등) 확정 시 교체 · 1세트 선주문 → 현장 검증 → 추가 발주</p>
+          <p class="text-xs text-slate-500 mt-0.5">구매 링크를 붙이면 상품 사진·이름을 눌러 판매 페이지로 이동 · 상태는 확정 / 검토 / 반려 · 1세트 선주문 → 현장 검증 → 추가 발주</p>
         </div>
         <div class="flex gap-2 text-xs">
           <span class="px-2.5 py-1 rounded-full bg-teal-50 text-teal-800 font-semibold">상시 비치 <span id="sum-fixed"></span></span>
@@ -140,11 +140,18 @@
         </div>
       </div>
       <div class="mt-4 overflow-x-auto -mx-2" data-region="gearList">
-        <table class="w-full min-w-[860px] text-sm">
+        <div class="px-2 mb-2 flex flex-wrap items-center gap-2 text-xs">
+          <span class="font-semibold text-slate-500">상태</span>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold">확정 <b id="st-ok">0</b></span>
+          <span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 font-semibold">검토 <b id="st-review">0</b></span>
+          <span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 font-semibold">반려 <b id="st-reject">0</b></span>
+          <span class="text-slate-400">· 반려 품목은 합계에서 빠짐 · 확정 금액 <b id="st-ok-amt" class="text-emerald-700"></b></span>
+        </div>
+        <table class="w-full min-w-[1080px] text-sm">
           <thead><tr class="text-left text-xs text-slate-500 border-b border-slate-200">
-            <th class="py-2 px-2 w-[46px]">1세트</th><th class="py-2 px-2">품목</th><th class="py-2 px-2 w-[104px]">구분</th>
-            <th class="py-2 px-2 text-right w-[108px]">단가</th><th class="py-2 px-2 text-right w-[64px]">수량</th>
-            <th class="py-2 px-2 text-right w-[118px]">금액</th><th class="py-2 px-2">메모</th><th class="w-[34px] no-print"></th>
+            <th class="py-2 px-2 w-[46px]">1세트</th><th class="py-2 px-2">상품 · 구매 링크</th><th class="py-2 px-2 w-[100px]">구분</th><th class="py-2 px-2 w-[88px]">상태</th>
+            <th class="py-2 px-2 text-right w-[104px]">단가</th><th class="py-2 px-2 text-right w-[58px]">수량</th>
+            <th class="py-2 px-2 text-right w-[112px]">금액</th><th class="py-2 px-2 w-[180px]">메모</th><th class="w-[34px] no-print"></th>
           </tr></thead>
           <tbody id="gear-rows"></tbody>
           <tfoot><tr class="border-t-2 border-slate-200">
@@ -154,7 +161,7 @@
                 <button class="text-xs px-2.5 py-1 rounded-lg text-slate-400 hover:text-slate-600" data-act="gear-reset" data-key="gearList">↺ 처음 값</button>
               </div>
             </td>
-            <td class="py-2.5 px-2 font-bold" colspan="3">합계</td><td class="py-2.5 px-2 text-right font-bold" id="gear-total"></td><td class="py-2.5 px-2 text-xs text-slate-500">1세트 체크 <span id="gear-picked">0</span>개 · 금액은 단가×수량 자동 계산 (직접 입력도 가능)</td><td></td>
+            <td class="py-2.5 px-2 font-bold" colspan="4">합계 <span class="font-normal text-xs text-slate-400">(반려 제외)</span></td><td class="py-2.5 px-2 text-right font-bold" id="gear-total"></td><td class="py-2.5 px-2 text-xs text-slate-500">1세트 체크 <span id="gear-picked">0</span>개</td><td></td>
           </tr></tfoot>
         </table>
       </div>
@@ -255,7 +262,7 @@ const GEAR = [
   ['스위스마운틴 헥사돔 원터치텐트', 'r', 93800, 7, ''],
   ['이너텐트', 'r', 40000, 7, '단가 추정'],
 ];
-DEFAULTS.gearList = GEAR.map(([name, kind, price, qty, note]) => ({ name, kind, price, qty, amt:null, note, picked:false }));
+DEFAULTS.gearList = GEAR.map(([name, kind, price, qty, note]) => ({ name, kind, price, qty, amt:null, note, picked:false, status:'review', url:'', image:'' }));
 
 let S = clone(DEFAULTS);
 
@@ -467,15 +474,21 @@ function updateCostTotal(key) {
 // 투자 구분 — 파쇄석 = 피코, 풀타프·외부 시설 + 내부 장비 = 캠핏
 function updateInvest() {
   if (!S.gearList) return;
-  const g = costSum('cost:gravel'), tp = costSum('cost:tarp'), ge = S.gearList.reduce((s, r) => s + rowAmt(r), 0);
+  const g = costSum('cost:gravel'), tp = costSum('cost:tarp'), ge = activeGear().reduce((s, r) => s + rowAmt(r), 0);
   const put = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = won(v); };
   put('inv-pico', g); put('inv-pico-gravel', g);
   put('inv-camp', tp + ge); put('inv-camp-tarp', tp); put('inv-camp-gear', ge);
 }
 
 const rowAmt = r => r.amt ?? (r.price || 0) * (r.qty || 0);
+const activeGear = () => S.gearList.filter(r => r.status !== 'reject');
+const STATUS = { review:['검토', 'bg-amber-50 text-amber-700 border-amber-200'], ok:['확정', 'bg-emerald-50 text-emerald-700 border-emerald-200'], reject:['반려', 'bg-rose-50 text-rose-700 border-rose-200'] };
+const safeUrl = u => /^https?:\/\//i.test(String(u || '').trim()) ? String(u).trim() : '';
+const storeOf = u => { try { const h = new URL(u).hostname.replace(/^www\.|^m\./, ''); return /coupang/.test(h) ? '쿠팡' : /naver/.test(h) ? '네이버' : /11st/.test(h) ? '11번가' : /gmarket/.test(h) ? 'G마켓' : h; } catch (_) { return ''; } };
 function updateGearTotals() {
-  const L = S.gearList, sum = k => L.filter(r => r.kind === k).reduce((s, r) => s + rowAmt(r), 0);
+  const L = activeGear(), sum = k => L.filter(r => r.kind === k).reduce((s, r) => s + rowAmt(r), 0);
+  ['ok', 'review', 'reject'].forEach(k => { document.getElementById('st-' + k).textContent = S.gearList.filter(r => (r.status || 'review') === k).length; });
+  document.getElementById('st-ok-amt').textContent = won(S.gearList.filter(r => r.status === 'ok').reduce((s, r) => s + rowAmt(r), 0));
   document.getElementById('sum-fixed').textContent = won(sum('f'));
   document.getElementById('sum-rental').textContent = won(sum('r'));
   const total = L.reduce((s, r) => s + rowAmt(r), 0);
@@ -484,23 +497,54 @@ function updateGearTotals() {
   updateInvest();
 }
 const gIn = 'w-full bg-transparent rounded px-1.5 py-1 focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500';
+function gearMedia(r, i) {
+  const url = safeUrl(r.url), img = safeUrl(r.image);
+  const thumb = img
+    ? `<img src="${esc(img)}" alt="" class="h-full w-full object-cover" onerror="this.remove()">`
+    : '';
+  const box = `<span class="relative h-16 w-16 flex-none rounded-xl bg-slate-100 border border-slate-200 overflow-hidden grid place-content-center text-slate-300 text-xl">📷${thumb ? `<span class="absolute inset-0">${thumb}</span>` : ''}</span>`;
+  return url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" title="구매 페이지로 이동" class="hover:opacity-80">${box}</a>` : box;
+}
+function gearLink(r) {
+  const url = safeUrl(r.url);
+  return url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 flex-none whitespace-nowrap text-[11px] font-bold px-2 py-1 rounded-lg bg-brand-600 text-white hover:bg-brand-700">${esc(storeOf(url) || '구매')} ↗</a>` : '';
+}
 function renderGear() {
-  document.getElementById('gear-rows').innerHTML = S.gearList.length ? S.gearList.map((r, i) => `
-    <tr class="border-b border-slate-100 hover:bg-slate-50 align-top">
-      <td class="py-1.5 px-2"><input type="checkbox" class="chk mt-1.5" data-bind="gearList|${i}|picked" ${r.picked ? 'checked' : ''}></td>
-      <td class="py-1.5 px-1"><input class="${gIn} font-medium" data-bind="gearList|${i}|name" value="${esc(r.name)}" placeholder="품목명"></td>
-      <td class="py-1.5 px-1">
+  document.getElementById('gear-rows').innerHTML = S.gearList.length ? S.gearList.map((r, i) => {
+    const st = r.status || 'review';
+    return `
+    <tr class="border-b border-slate-100 hover:bg-slate-50 align-top ${st === 'reject' ? 'opacity-50' : ''}" data-gear-row="${i}">
+      <td class="py-2 px-2"><input type="checkbox" class="chk mt-1.5" data-bind="gearList|${i}|picked" ${r.picked ? 'checked' : ''}></td>
+      <td class="py-2 px-1">
+        <div class="flex gap-3">
+          <span class="g-media">${gearMedia(r, i)}</span>
+          <div class="flex-1 min-w-0 space-y-1">
+            <input class="${gIn} font-semibold ${st === 'reject' ? 'line-through' : ''}" data-bind="gearList|${i}|name" value="${esc(r.name)}" placeholder="품목명">
+            <div class="flex items-center gap-1.5">
+              <input class="${gIn} text-[12px] text-sky-700 border border-dashed border-slate-200" data-bind="gearList|${i}|url" value="${esc(r.url || '')}" placeholder="🔗 구매 링크 붙여넣기 (쿠팡 · 네이버 등)">
+              <span class="g-link">${gearLink(r)}</span>
+            </div>
+            <input class="${gIn} text-[11px] text-slate-400 border border-dashed border-slate-200" data-bind="gearList|${i}|image" value="${esc(r.image || '')}" placeholder="🖼 이미지 주소 (상품 사진 우클릭 → 이미지 주소 복사)">
+          </div>
+        </div>
+      </td>
+      <td class="py-2 px-1">
         <select class="${gIn} text-[12px] font-semibold ${r.kind === 'f' ? 'text-teal-800' : 'text-violet-800'}" data-bind="gearList|${i}|kind">
           <option value="f" ${r.kind === 'f' ? 'selected' : ''}>상시 비치</option>
           <option value="r" ${r.kind === 'r' ? 'selected' : ''}>대여 상품</option>
         </select>
       </td>
-      <td class="py-1.5 px-1"><input class="${gIn} text-right tabular-nums" data-bind="gearList|${i}|price" data-num inputmode="numeric" value="${fmt(r.price)}"></td>
-      <td class="py-1.5 px-1"><input class="${gIn} text-right tabular-nums" data-bind="gearList|${i}|qty" data-num inputmode="numeric" value="${fmt(r.qty)}"></td>
-      <td class="py-1.5 px-1"><input class="${gIn} text-right tabular-nums font-semibold ${r.amt != null ? 'text-amber-700' : ''}" data-bind="gearList|${i}|amt" data-num inputmode="numeric" value="${fmt(rowAmt(r))}" title="${r.amt != null ? '직접 입력한 금액' : '단가 × 수량'}"></td>
-      <td class="py-1.5 px-1"><input class="${gIn} text-[12px] ${String(r.note).startsWith('⚠') ? 'text-rose-600' : 'text-slate-500'}" data-bind="gearList|${i}|note" value="${esc(r.note)}" placeholder="메모"></td>
-      <td class="py-1.5 px-1 text-right no-print"><button class="h-7 w-7 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50" data-act="gear-del" data-key="gearList" data-j="${i}" title="품목 삭제">✕</button></td>
-    </tr>`).join('') : '<tr><td colspan="8" class="py-4 text-center text-xs text-slate-400">품목이 없습니다</td></tr>';
+      <td class="py-2 px-1">
+        <select class="w-full rounded-lg border px-1.5 py-1 text-[12px] font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 ${STATUS[st][1]}" data-bind="gearList|${i}|status">
+          ${Object.entries(STATUS).map(([k, [label]]) => `<option value="${k}" ${st === k ? 'selected' : ''}>${label}</option>`).join('')}
+        </select>
+      </td>
+      <td class="py-2 px-1"><input class="${gIn} text-right tabular-nums" data-bind="gearList|${i}|price" data-num inputmode="numeric" value="${fmt(r.price)}"></td>
+      <td class="py-2 px-1"><input class="${gIn} text-right tabular-nums" data-bind="gearList|${i}|qty" data-num inputmode="numeric" value="${fmt(r.qty)}"></td>
+      <td class="py-2 px-1"><input class="${gIn} text-right tabular-nums font-semibold ${r.amt != null ? 'text-amber-700' : ''}" data-bind="gearList|${i}|amt" data-num inputmode="numeric" value="${fmt(rowAmt(r))}" title="${r.amt != null ? '직접 입력한 금액' : '단가 × 수량'}"></td>
+      <td class="py-2 px-1"><input class="${gIn} text-[12px] ${String(r.note).startsWith('⚠') ? 'text-rose-600' : 'text-slate-500'}" data-bind="gearList|${i}|note" value="${esc(r.note)}" placeholder="메모"></td>
+      <td class="py-2 px-1 text-right no-print"><button class="h-7 w-7 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50" data-act="gear-del" data-key="gearList" data-j="${i}" title="품목 삭제">✕</button></td>
+    </tr>`; }).join('') : '<tr><td colspan="9" class="py-4 text-center text-xs text-slate-400">품목이 없습니다</td></tr>';
   updateGearTotals();
 }
 
@@ -549,6 +593,17 @@ document.addEventListener('input', e => {
     }
     if (f === 'amt') el.classList.add('text-amber-700');
     if (f === 'kind') { el.classList.toggle('text-teal-800', value === 'f'); el.classList.toggle('text-violet-800', value === 'r'); }
+    const row = el.closest('[data-gear-row]');
+    if (f === 'url' || f === 'image') {
+      row.querySelector('.g-media').innerHTML = gearMedia(r, i);
+      row.querySelector('.g-link').innerHTML = gearLink(r);
+    }
+    if (f === 'status') {
+      Object.values(STATUS).forEach(([, c]) => el.classList.remove(...c.split(' ')));
+      el.classList.add(...STATUS[value][1].split(' '));
+      row.classList.toggle('opacity-50', value === 'reject');
+      row.querySelector('[data-bind$="|name"]').classList.toggle('line-through', value === 'reject');
+    }
     updateGearTotals();
   }
   if (key.startsWith('disc:') && path[0] === 'done') { el.closest('.disc').classList.toggle('disc-done', value); updateDiscCount(); }
@@ -564,7 +619,7 @@ document.addEventListener('click', e => {
   else if (btn.dataset.act === 'cost-add') S[key].push({ name:'', desc:'', amt:0 });
   else if (btn.dataset.act === 'cost-reset') S[key] = clone(DEFAULTS[key]);
   else if (btn.dataset.act === 'gear-del') S.gearList.splice(j, 1);
-  else if (btn.dataset.act === 'gear-add') S.gearList.push({ name:'', kind:'f', price:0, qty:1, amt:null, note:'', picked:false });
+  else if (btn.dataset.act === 'gear-add') S.gearList.push({ name:'', kind:'f', price:0, qty:1, amt:null, note:'', picked:false, status:'review', url:'', image:'' });
   else if (btn.dataset.act === 'gear-reset') { if (!confirm('장비 리스트를 처음 값으로 되돌릴까요? 모두의 화면에 반영됩니다.')) return; S.gearList = clone(DEFAULTS.gearList); }
   renderKey(key);
   queueSave(key, 0);
