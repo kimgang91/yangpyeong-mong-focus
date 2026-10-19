@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>양평 몽 포커스 미팅</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { sans: ['Pretendard', 'Apple SD Gothic Neo', 'sans-serif'] },
+      colors: { brand: { 50:'#f0fdfa', 100:'#ccfbf1', 500:'#14b8a6', 600:'#0d9488', 700:'#0f766e', 900:'#134e4a' } }
+    } }
+  };
+</script>
+<script src="config.js"></script>
+<style>
+  body { background:#f6f7f9; }
+  .chk { appearance:none; width:18px; height:18px; border:2px solid #cbd5e1; border-radius:6px; flex:none; margin-top:2px; cursor:pointer; display:grid; place-content:center; transition:.15s; background:#fff; }
+  .chk:checked { background:#0d9488; border-color:#0d9488; }
+  .chk:checked::after { content:''; width:5px; height:9px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg) translate(-1px,-1px); }
+  .disc-done { border-color:#99f6e4 !important; background:#f0fdfa !important; }
+  .disc-done .disc-num { background:#0d9488; color:#fff; }
+  .edit-only { display:none; }
+  body.editing .edit-only { display:inline-flex; }
+  body.editing [data-edit] { outline:1px dashed #94a3b8; outline-offset:2px; border-radius:4px; cursor:text; }
+  body.editing [data-edit]:focus { outline:2px solid #14b8a6; background:#fff; }
+  [data-edit]:empty::before { content:attr(data-ph); color:#cbd5e1; }
+  body:not(.editing) [data-edit]:empty { display:none; }
+  .flash { animation: flash 1.2s ease-out; }
+  @keyframes flash { from { box-shadow:0 0 0 3px #fcd34d; } to { box-shadow:0 0 0 3px transparent; } }
+  @media print { .no-print { display:none !important; } body { background:#fff; } }
+</style>
+</head>
+<body class="font-sans text-slate-800 antialiased">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+  <!-- 헤더 -->
+  <header class="flex flex-col md:flex-row md:items-end gap-4 mb-6">
+    <div class="flex-1">
+      <div class="flex items-center gap-2 text-sm text-brand-700 font-semibold">
+        <span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-brand-600 text-white text-xs">⛺</span>
+        크루캠 인 양평 몽 · 전수창업
+      </div>
+      <h1 class="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight" data-edit data-bind="header|title" data-ph="제목"></h1>
+      <p class="mt-1 text-slate-500 text-sm" data-edit data-bind="header|sub" data-ph="부제"></p>
+    </div>
+    <div class="rounded-2xl bg-white border border-slate-200 px-4 py-3 shadow-sm md:w-64">
+      <div class="flex items-baseline justify-between">
+        <span class="text-xs text-slate-500">의논 사항 결정</span>
+        <span class="text-xl font-extrabold text-brand-700"><span id="disc-done">0</span><span class="text-slate-400 text-sm font-semibold"> / <span id="disc-total">0</span></span></span>
+      </div>
+      <div class="mt-2 h-1.5 rounded-full bg-slate-100 overflow-hidden"><div id="disc-bar" class="h-full bg-brand-500 transition-all" style="width:0%"></div></div>
+    </div>
+  </header>
+
+  <!-- 메뉴 -->
+  <nav class="no-print sticky top-0 z-20 -mx-4 sm:mx-0 px-4 sm:px-0 py-2 mb-5 bg-[#f6f7f9]/90 backdrop-blur flex flex-wrap items-center gap-2">
+    <div class="inline-flex rounded-2xl bg-white border border-slate-200 p-1 shadow-sm text-sm">
+      <button data-tab="meeting" class="tab-btn px-4 py-2 rounded-xl font-semibold">🗣 미팅 안건</button>
+      <button data-tab="build" class="tab-btn px-4 py-2 rounded-xl font-semibold">🏗 공사 일정 · 장비</button>
+    </div>
+    <button id="edit-toggle" class="inline-flex items-center gap-1.5 rounded-2xl bg-white border border-slate-200 px-4 py-2.5 shadow-sm text-sm font-semibold text-slate-600 hover:bg-slate-50">✏️ 내용 수정</button>
+    <span class="edit-only text-xs text-slate-500">점선 글자를 눌러 고치세요 · 끝나면 '수정 완료'</span>
+    <span id="sync" class="ml-auto inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-white border border-slate-200 text-slate-500">
+      <span id="sync-dot" class="h-2 w-2 rounded-full bg-slate-300"></span><span id="sync-text">연결 중…</span>
+    </span>
+  </nav>
+
+  <!-- 미팅 안건 -->
+  <div id="tab-meeting" class="tab-panel">
+    <section class="rounded-3xl bg-white border border-slate-200 shadow-sm p-5 sm:p-6 mb-6">
+      <div class="flex items-center gap-2 mb-5">
+        <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-brand-50 text-brand-700">1</span>
+        <h2 class="font-bold text-lg">이렇게 진행할 예정입니다</h2>
+      </div>
+      <ol id="timeline" class="grid grid-cols-1 sm:grid-cols-7 gap-0 sm:gap-2 relative"></ol>
+    </section>
+
+    <section class="mb-6">
+      <div class="flex items-center justify-between gap-2 mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800">2</span>
+          <h2 class="font-bold text-lg">오늘 의논할 사항</h2>
+        </div>
+        <span class="text-xs text-slate-400 no-print">결정 내용을 칸에 적고, 끝나면 체크</span>
+      </div>
+      <div id="discuss" class="grid md:grid-cols-2 gap-4"></div>
+    </section>
+  </div>
+
+  <!-- 공사 일정 · 장비 -->
+  <div id="tab-build" class="tab-panel hidden">
+    <section class="rounded-3xl bg-white border border-slate-200 shadow-sm p-5 sm:p-6 mb-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
+        <h2 class="font-bold text-lg">공사 일정</h2>
+        <span class="text-xs text-slate-400">날짜가 정해지지 않은 단계는 <b class="text-slate-500">미정</b>으로 표시 · 순서는 파쇄석 → 풀타프 → 장비 비치</span>
+      </div>
+      <div id="tracks" class="grid lg:grid-cols-3 gap-4"></div>
+    </section>
+
+    <div class="grid lg:grid-cols-2 gap-4 mb-6">
+      <section id="gravel" class="rounded-3xl bg-white border border-slate-200 shadow-sm p-5 sm:p-6"></section>
+      <section id="tarp" class="rounded-3xl bg-white border border-slate-200 shadow-sm p-5 sm:p-6"></section>
+    </div>
+
+    <section class="rounded-3xl bg-white border border-slate-200 shadow-sm p-5 sm:p-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div>
+          <h2 class="font-bold text-lg">🛋 내부 장비 리스트</h2>
+          <p class="text-xs text-slate-500 mt-0.5">시뮬레이션 기본값(2026-10-07) 기준 · 김경수 구매 리스트(쿠팡 등) 확정 시 교체 · 1세트 선주문 → 현장 검증 → 추가 발주</p>
+        </div>
+        <div class="flex gap-2 text-xs">
+          <span class="px-2.5 py-1 rounded-full bg-teal-50 text-teal-800 font-semibold">상시 비치 <span id="sum-fixed"></span></span>
+          <span class="px-2.5 py-1 rounded-full bg-violet-50 text-violet-800 font-semibold">대여 상품 <span id="sum-rental"></span></span>
+        </div>
+      </div>
+      <div class="mt-4 overflow-x-auto -mx-2">
+        <table class="w-full min-w-[720px] text-sm">
+          <thead><tr class="text-left text-xs text-slate-500 border-b border-slate-200">
+            <th class="py-2 px-2 w-[60px]">1세트</th><th class="py-2 px-2">품목</th><th class="py-2 px-2 w-[80px]">구분</th>
+            <th class="py-2 px-2 text-right w-[90px]">단가</th><th class="py-2 px-2 text-right w-[60px]">수량</th>
+            <th class="py-2 px-2 text-right w-[100px]">금액</th><th class="py-2 px-2">메모</th>
+          </tr></thead>
+          <tbody id="gear-rows"></tbody>
+          <tfoot><tr class="border-t-2 border-slate-200 font-bold">
+            <td></td><td class="py-2.5 px-2" colspan="4">합계</td><td class="py-2.5 px-2 text-right" id="gear-total"></td><td class="py-2.5 px-2 text-xs text-slate-500 font-medium">1세트 체크 <span id="gear-picked">0</span>개</td>
+          </tr></tfoot>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <p id="footer-note" class="mt-6 text-center text-xs text-slate-400"></p>
+</div>
+
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+const clone = v => JSON.parse(JSON.stringify(v));
+const fmt = n => (n || 0).toLocaleString('ko-KR');
+const won = n => n >= 10000 ? (n / 10000).toLocaleString('ko-KR', { maximumFractionDigits: 1 }) + '만' : fmt(n) + '원';
+
+/* ───────── 기본값 — 저장된 값이 없을 때만 쓰임 ───────── */
+const DISC_DEFAULTS = [
+  { icon:'⛺', title:'풀타프 최종 스펙 및 컬러',
+    points:['기본형 설계는 확정 — 세부 스펙(재질 등) 최종 확인', '스킨 컬러 결정 — 전달 전까지 시호이엔씨 진행 불가', '1차 6동 설치 → 구역 확장 후 2동 추가 설치 (총 8동)', '11/1 1차 설치 일정 시호이엔씨와 확정'] },
+  { icon:'🛋', title:'최종 세팅 장비',
+    points:['김경수 정리 구매 리스트 검토', '구역마다 상시 비치할 품목 확정', '대여용으로 둘 품목 구분'] },
+  { icon:'📦', title:'장비 1세트 구매 · 검증 후 추가 발주',
+    points:['1세트 품목 확정 · 주문 시점', '현장 검증 기준 (누가, 무엇을 볼지)', '추가 발주 수량(6세트) · 11/1 타프 설치에 맞춘 시점'] },
+  { icon:'💳', title:'캠핏 비용처리 어떻게?',
+    points:['공사·풀타프·장비 비용을 누가 부담할지', '발주·결제 명의와 세금계산서 처리', '지출 승인 기준 · 증빙 관리 방법'] },
+  { icon:'🎈', title:'컨셉 회의 — 다음 주 월요일(10/26)',
+    points:['컨셉에 맞춰 추가 장비 품목 확정', '에어바운스 · 체험 장비 등', '참석자 · 미팅 등록'] },
+  { icon:'🏕', title:'캠핏 보유 오투라이프 에어텐트 활용',
+    points:['활용 방식 — 구역 비치 / 대여 상품 / 단체·체험용 등'] },
+  { icon:'🧾', title:'적용 플랜 수수료',
+    points:['적용할 플랜과 수수료율 결정', '참고: 시뮬레이션 기본값은 캠핏 투자 0원일 때 매출의 16.5%', '참고: A안(프렌들리) · B안(전수창업) 비교안 있음'] },
+];
+
+const DEFAULTS = {
+  header: { title:'포커스 미팅', sub:'10월 20일(화) · 타임라인 및 최종 의견 검토' },
+  steps: [
+    { date:'10/19 (월)', text:'파쇄석 / 풀타프 / 장비리스트 확인', sub:'', iso:'2026-10-19' },
+    { date:'10/20 (화)', text:'포커스 미팅', sub:'타임라인 및 최종 의견 검토', iso:'2026-10-20', key:true },
+    { date:'10/21 (수)', text:'현장 방문', sub:'승계 행정 · 실측 · 파쇄석 견적', iso:'2026-10-21', key:true },
+    { date:'10/26 (월)', text:'컨셉 회의', sub:'추가 장비 품목 확정', iso:'2026-10-26' },
+    { date:'10/30 (금)', text:'파쇄석 공사 완료', sub:'', iso:'2026-10-30', key:true },
+    { date:'11/1 (일)',  text:'풀타프 1차 6동 설치', sub:'구역 확장 후 2동 추가', iso:'2026-11-01', key:true },
+    { date:'11/2 (월)',  text:'단체 예약 전환', sub:'', iso:'2026-11-02', key:true, goal:true },
+  ],
+  'cost:gravel': [
+    { name:'파쇄석(쇄석) 포설', desc:'25t 1대 70만원 × 10대', amt:7000000 },
+    { name:'석분 포설 · 다짐', desc:'인력 2명 × 3일 + 진동롤러', amt:1500000 },
+    { name:'포크레인 (중장비)', desc:'1일 100만원 × 3일', amt:3000000 },
+  ],
+  'cost:tarp': [
+    { name:'프레임형 풀타프 1차 (게이블 · 일체형)', desc:'363.6만원 × 6동 · 11/1 설치', amt:21816000 },
+    { name:'프레임형 풀타프 추가', desc:'363.6만원 × 2동 · 구역 확장 후', amt:7272000 },
+    { name:'1.5×6m 모듈형 울타리', desc:'40만원 × 4 · 3·5구역 각 2모듈', amt:1600000 },
+    { name:'줄조명 파티라이트 6구', desc:'7.7만원 × 7 · 야간 분위기', amt:539000 },
+  ],
+  tiles: { area:'약 900평', thick:'5cm', design:'기본형 확정', qty:'6동 + 2동' },
+  fields: { gVendor:'', gQuote:'', gDate:'', tColor:'', tMaterial:'', tDate:'' },
+  gear: { picked: [] },
+};
+DISC_DEFAULTS.forEach((d, i) => { DEFAULTS['disc:' + i] = { ...d, done:false, memo:'' }; });
+
+let S = clone(DEFAULTS);
+
+/* ───────── 고정 데이터 (편집 안 함) ───────── */
+const TRACKS = [
+  { icon:'🪨', title:'파쇄석', owner:'지아', steps:[
+    { date:'10/19', text:'여주 인근 업체 섭외 · 단가/일정/추가비용 확인' },
+    { date:'10/21', text:'현장 견적 미팅 (수요일 방문 때)' },
+    { date:'미정',  text:'업체 확정 · 계약' },
+    { date:'미정',  text:'공사 착수 (정지 → 파쇄석 → 석분 · 다짐)' },
+    { date:'10/30', text:'공사 완료', goal:true },
+  ] },
+  { icon:'⛺', title:'풀타프', owner:'시호이엔씨', steps:[
+    { date:'완료',  text:'기본형 설계 확정', done:true },
+    { date:'10/20', text:'최종 스펙 · 스킨 컬러 확정 (포커스 미팅)' },
+    { date:'10/21', text:'현장 검토 — 시호이엔씨 양평 몽 캠핑장 방문' },
+    { date:'11/1',  text:'1차 풀타프 6동 설치 (파쇄석 완료 후)', goal:true },
+    { date:'미정',  text:'구역 확장 후 풀타프 2동 추가 설치' },
+  ] },
+  { icon:'🛋', title:'내부 장비', owner:'김경수', steps:[
+    { date:'10/20', text:'구매 리스트 공유 (포커스 미팅)' },
+    { date:'미정',  text:'1세트 우선 주문' },
+    { date:'미정',  text:'현장 검증 → 품목 최종 확정' },
+    { date:'11/1 전후', text:'6세트 추가 발주 · 비치 (타프 설치에 맞춤)' },
+    { date:'11/2',  text:'단체 예약 전환', goal:true },
+  ] },
+];
+
+const GEAR = [
+  ['스탠드형 냉난방기', 'f', 1500000, 7, '4계절 기본 냉난방'],
+  ['사이트 분전반 + 케이블 릴', 'f', 41070, 7, '누전차단기 포함'],
+  ['ABC 분말 소화기 3.3kg', 'f', 17900, 7, '화기 구역 필수'],
+  ['일산화탄소(CO) 경보기', 'f', 30000, 7, '안전 · 단가 추정'],
+  ['하이그라운즈 카고박스', 'f', 57560, 7, '수납'],
+  ['207L 냉장고', 'f', 265000, 7, '바베큐 식자재'],
+  ['영라이즌 접이식 캠핑화로대', 'f', 24900, 7, '불멍 · 숯불'],
+  ['로티캠프 로우체어 4개', 'f', 99800, 12, '2팀 8개 / 3팀 12개'],
+  ['빈슨메시프 롤테이블', 'f', 45400, 14, '4인용'],
+  ['메세타 화목난로', 'f', 251000, 7, '⚠ 풀타프 안 화목난로는 안전 원칙과 충돌 — 포함 여부 확인'],
+  ['스마트 폴더블쉘프 3단', 'f', 78900, 7, '선반'],
+  ['썬토치 스토브', 'f', 40340, 14, '1개동 2개씩 비치'],
+  ['팬히터 (전기 · 안전형)', 'r', 403200, 4, '11~3월 · 구매 전 전기식인지 확인'],
+  ['포레바 자충매트리스 (더블)', 'r', 169000, 10, '2인용'],
+  ['블랙독 침낭', 'r', 25800, 24, '세탁 순환분 포함'],
+  ['낚시 도구 세트', 'r', 30000, 10, '빙어 · 송어 · 추정'],
+  ['로스팅 도구', 'r', 59000, 1, '커피 체험'],
+  ['핸드드립 세트 (그라인더 포함)', 'r', 59000, 2, '커피 체험'],
+  ['팝콘 기기', 'r', 19500, 1, '팝콘 판매'],
+  ['로우체어 2개', 'r', 49900, 1, ''],
+  ['스위스마운틴 헥사돔 원터치텐트', 'r', 93800, 7, ''],
+  ['이너텐트', 'r', 40000, 7, '단가 추정'],
+];
+
+/* ───────── 렌더링 ───────── */
+function renderHeader() {
+  document.querySelectorAll('[data-bind^="header|"]').forEach(el => { el.textContent = S.header[el.dataset.bind.split('|')[1]] || ''; });
+}
+
+function renderTimeline() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const steps = S.steps;
+  document.getElementById('timeline').innerHTML = steps.map((s, i) => {
+    const d = s.iso ? new Date(s.iso + 'T00:00:00') : null;
+    const isToday = d && d.getTime() === today.getTime();
+    const past = d && d < today;
+    const last = i === steps.length - 1;
+    const dot = s.goal ? 'bg-brand-600 text-white ring-4 ring-brand-100'
+      : s.key ? 'bg-white text-brand-700 border-2 border-brand-600' : 'bg-white text-slate-500 border-2 border-slate-300';
+    return `<li class="relative flex sm:flex-col items-start sm:items-center gap-3 sm:gap-0 sm:text-center pb-5 sm:pb-0 ${past ? 'opacity-50' : ''}">
+      ${!last ? '<span class="absolute bg-slate-200 left-[17px] top-9 bottom-0 w-0.5 sm:left-1/2 sm:top-[17px] sm:w-full sm:h-0.5 sm:bottom-auto"></span>' : ''}
+      <span class="relative z-10 h-9 w-9 flex-none rounded-full grid place-content-center text-xs font-extrabold ${dot} ${isToday ? 'outline outline-2 outline-offset-4 outline-amber-400' : ''}">${i + 1}</span>
+      <div class="sm:mt-3">
+        <div class="text-sm font-extrabold ${s.key ? 'text-brand-700' : 'text-slate-600'}"><span data-edit data-bind="steps|${i}|date" data-ph="날짜">${esc(s.date)}</span>${isToday ? ' <span class="text-[10px] font-bold text-amber-600">오늘</span>' : ''}</div>
+        <div class="mt-0.5 font-bold text-[14px] leading-snug break-keep" data-edit data-bind="steps|${i}|text" data-ph="할 일">${esc(s.text)}</div>
+        <div class="mt-0.5 text-xs text-slate-500 leading-snug break-keep" data-edit data-bind="steps|${i}|sub" data-ph="설명 (선택)">${esc(s.sub)}</div>
+      </div>
+    </li>`;
+  }).join('');
+}
+
+function discCard(i) {
+  const key = 'disc:' + i, d = S[key];
+  return `<article class="disc ${d.done ? 'disc-done' : ''} rounded-3xl shadow-sm p-5 h-full bg-white border border-slate-200 flex flex-col transition-colors" data-region="${key}">
+    <div class="flex items-start gap-3">
+      <span class="disc-num h-8 min-w-[32px] px-1.5 flex-none rounded-xl bg-amber-100 text-amber-800 grid place-content-center text-sm font-extrabold transition-colors">${i + 1}</span>
+      <h3 class="flex-1 min-w-0 font-bold text-[16px] leading-snug pt-1">${d.icon} <span data-edit data-bind="${key}|title" data-ph="안건 제목">${esc(d.title)}</span></h3>
+      <label class="no-print flex items-center gap-1.5 text-xs text-slate-500 cursor-pointer select-none whitespace-nowrap pt-1.5">
+        <input type="checkbox" class="chk" data-bind="${key}|done" ${d.done ? 'checked' : ''}> 결정 완료
+      </label>
+    </div>
+    <ul class="mt-3 space-y-1.5 text-[14px] text-slate-600">
+      ${d.points.map((p, j) => `<li class="flex gap-2 items-start ${p.startsWith('참고') ? 'text-slate-400 text-[13px]' : ''}"><span class="text-slate-300">•</span><span class="flex-1" data-edit data-bind="${key}|points|${j}" data-ph="내용 입력">${esc(p)}</span><button class="edit-only no-print h-5 w-5 flex-none items-center justify-center rounded text-slate-300 hover:text-rose-600 hover:bg-rose-50" data-act="pt-del" data-key="${key}" data-j="${j}" title="삭제">✕</button></li>`).join('')}
+    </ul>
+    <button class="edit-only no-print mt-2 self-start text-xs px-2.5 py-1 rounded-lg border border-dashed border-slate-300 text-slate-500 hover:bg-slate-50" data-act="pt-add" data-key="${key}">＋ 내용 추가</button>
+    <textarea rows="2" placeholder="결정 내용 · 담당 · 기한" data-bind="${key}|memo" class="mt-4 flex-1 min-h-[60px] w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">${esc(d.memo)}</textarea>
+  </article>`;
+}
+
+function renderDiscuss() {
+  document.getElementById('discuss').innerHTML = DISC_DEFAULTS.map((_, i) => discCard(i)).join('');
+  updateDiscCount();
+}
+function renderDisc(i) {
+  const old = document.querySelector(`[data-region="disc:${i}"]`);
+  if (!old) return renderDiscuss();
+  old.outerHTML = discCard(i);
+  updateDiscCount();
+}
+function updateDiscCount() {
+  const total = DISC_DEFAULTS.length;
+  const n = DISC_DEFAULTS.filter((_, i) => S['disc:' + i].done).length;
+  document.getElementById('disc-done').textContent = n;
+  document.getElementById('disc-total').textContent = total;
+  document.getElementById('disc-bar').style.width = Math.round(n / total * 100) + '%';
+}
+
+function renderTracks() {
+  document.getElementById('tracks').innerHTML = TRACKS.map(tr => `
+    <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-bold">${tr.icon} ${tr.title}</h3>
+        <span class="text-[11px] px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-600">${esc(tr.owner)}</span>
+      </div>
+      <ol class="relative ml-1.5 border-l-2 border-slate-200 space-y-3">
+        ${tr.steps.map(s => {
+          const tbd = s.date === '미정';
+          const dot = s.goal ? 'bg-brand-600 ring-4 ring-brand-100' : s.done ? 'bg-slate-400' : tbd ? 'bg-white border-2 border-dashed border-slate-400' : 'bg-white border-2 border-brand-600';
+          return `<li class="pl-4 relative">
+            <span class="absolute -left-[7px] top-1 h-3 w-3 rounded-full ${dot}"></span>
+            <div class="text-xs font-bold ${tbd ? 'text-amber-600' : s.goal ? 'text-brand-700' : 'text-slate-500'}">${esc(s.date)}</div>
+            <div class="text-[13.5px] leading-snug ${s.goal ? 'font-bold' : ''} ${s.done ? 'text-slate-500' : ''}">${s.done ? '✓ ' : ''}${esc(s.text)}</div>
+          </li>`; }).join('')}
+      </ol>
+    </div>`).join('');
+}
+
+const tile = (label, bind) => `<label class="block rounded-xl bg-slate-50 p-2.5 cursor-text ring-1 ring-transparent hover:ring-slate-300 focus-within:ring-2 focus-within:ring-brand-500 focus-within:bg-white transition">
+  <div class="text-[11px] text-slate-500">${label} <span class="no-print text-slate-300">✎</span></div>
+  <input data-bind="${bind}" class="w-full bg-transparent text-center font-extrabold focus:outline-none"></label>`;
+const fixedTile = (label, val) => `<div class="rounded-xl bg-slate-50 p-2.5"><div class="text-[11px] text-slate-500">${label}</div><div class="font-extrabold text-brand-700">${val}</div></div>`;
+const field = (label, bind, ph) => `<label class="block"><span class="text-[11px] text-slate-500">${label}</span>
+  <input data-bind="${bind}" placeholder="${ph}" class="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white"></label>`;
+const costBox = key => `<div class="cost mt-3" data-region="${key}">
+    <table class="w-full text-sm"><tbody class="cost-rows"></tbody></table>
+    <div class="flex items-center justify-between pt-2.5 border-t border-slate-200 mt-1">
+      <div class="flex items-center gap-2 no-print">
+        <button class="text-xs px-2.5 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 font-semibold" data-act="cost-add" data-key="${key}">＋ 항목 추가</button>
+        <button class="text-xs px-2.5 py-1 rounded-lg text-slate-400 hover:text-slate-600" data-act="cost-reset" data-key="${key}">↺ 처음 값</button>
+      </div>
+      <div class="text-right"><span class="text-[11px] text-slate-400 mr-1.5">합계</span><b class="cost-total text-brand-700 text-base"></b></div>
+    </div>
+  </div>`;
+
+function renderBuildCards() {
+  document.getElementById('gravel').innerHTML = `
+    <div class="flex items-start justify-between gap-2">
+      <h2 class="font-bold text-lg">🪨 파쇄석 공사</h2>
+      <span class="text-xs px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-semibold">업체 섭외 중</span>
+    </div>
+    <div class="mt-3 grid grid-cols-3 gap-2 text-center">${tile('면적', 'tiles|area')}${tile('두께', 'tiles|thick')}${fixedTile('완료 목표', '10/30')}</div>
+    ${costBox('cost:gravel')}
+    <div class="mt-4 grid sm:grid-cols-3 gap-2">${field('업체명', 'fields|gVendor', '여주 인근')}${field('견적 금액', 'fields|gQuote', '원')}${field('공사 일정', 'fields|gDate', '예: 10/27~10/29')}</div>
+    <p class="mt-3 text-[12px] text-slate-500">견적 때 확인: 운반비·부가세 포함 여부 · 파쇄석 규격 · 25t 트럭 진입 가능 여부 · 하자 보수</p>`;
+  document.getElementById('tarp').innerHTML = `
+    <div class="flex items-start justify-between gap-2">
+      <h2 class="font-bold text-lg">⛺ 풀타프 · 외부 시설</h2>
+      <span class="text-xs px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-semibold">컬러 미정</span>
+    </div>
+    <div class="mt-3 grid grid-cols-3 gap-2 text-center">${tile('설계', 'tiles|design')}${tile('수량', 'tiles|qty')}${fixedTile('설치 목표', '11/1')}</div>
+    ${costBox('cost:tarp')}
+    <div class="mt-4 grid sm:grid-cols-3 gap-2">${field('스킨 컬러', 'fields|tColor', '미정')}${field('세부 재질', 'fields|tMaterial', '미정')}${field('설치일', 'fields|tDate', '11/1 목표')}</div>
+    <p class="mt-3 text-[12px] text-slate-500">10/21 시호이엔씨 현장 검토 때 확인: 설치·운송·고정 포함 여부 · 방염 확인서 · 파쇄석 완료 후 설치</p>`;
+  renderInputs('tiles'); renderInputs('fields');
+  renderCost('cost:gravel'); renderCost('cost:tarp');
+}
+
+function renderInputs(key) {
+  document.querySelectorAll(`input[data-bind^="${key}|"]`).forEach(el => { el.value = S[key][el.dataset.bind.split('|')[1]] || ''; });
+}
+
+function renderCost(key) {
+  const box = document.querySelector(`.cost[data-region="${key}"]`);
+  const rows = S[key];
+  box.querySelector('.cost-rows').innerHTML = rows.length ? rows.map((r, i) => `
+    <tr class="border-b border-slate-100">
+      <td class="py-1.5 pr-2">
+        <input class="w-full bg-transparent font-medium focus:outline-none focus:bg-slate-50 rounded px-1 -mx-1" data-bind="${key}|${i}|name" value="${esc(r.name)}" placeholder="항목명">
+        <input class="w-full bg-transparent text-[11px] text-slate-400 focus:outline-none focus:bg-slate-50 rounded px-1 -mx-1" data-bind="${key}|${i}|desc" value="${esc(r.desc)}" placeholder="메모">
+      </td>
+      <td class="py-1.5 w-[132px] align-top">
+        <div class="flex items-center rounded-lg border border-slate-200 bg-slate-50 focus-within:ring-2 focus-within:ring-brand-500 focus-within:bg-white">
+          <input class="w-full bg-transparent text-right font-semibold tabular-nums px-2 py-1 focus:outline-none" data-bind="${key}|${i}|amt" data-num inputmode="numeric" value="${fmt(r.amt)}">
+          <span class="text-[11px] text-slate-400 pr-2">원</span>
+        </div>
+      </td>
+      <td class="py-1.5 w-[28px] align-top text-right no-print">
+        <button class="h-7 w-7 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50" data-act="cost-del" data-key="${key}" data-j="${i}" title="항목 삭제">✕</button>
+      </td>
+    </tr>`).join('') : '<tr><td class="py-3 text-center text-xs text-slate-400">항목이 없습니다</td></tr>';
+  updateCostTotal(key);
+}
+function updateCostTotal(key) {
+  const total = S[key].reduce((s, r) => s + (r.amt || 0), 0);
+  document.querySelector(`.cost[data-region="${key}"] .cost-total`).textContent = won(total) + ' (' + fmt(total) + '원)';
+}
+
+function renderGear() {
+  const sum = k => GEAR.filter(g => g[1] === k).reduce((s, g) => s + g[2] * g[3], 0);
+  document.getElementById('sum-fixed').textContent = won(sum('f'));
+  document.getElementById('sum-rental').textContent = won(sum('r'));
+  document.getElementById('gear-total').textContent = won(sum('f') + sum('r'));
+  const picked = new Set(S.gear.picked);
+  document.getElementById('gear-rows').innerHTML = GEAR.map(([name, k, price, qty, note], i) => `
+    <tr class="border-b border-slate-100 hover:bg-slate-50">
+      <td class="py-2 px-2"><input type="checkbox" class="chk" data-gear="${i}" ${picked.has(i) ? 'checked' : ''}></td>
+      <td class="py-2 px-2 font-medium">${esc(name)}</td>
+      <td class="py-2 px-2"><span class="text-[11px] px-1.5 py-0.5 rounded ${k === 'f' ? 'bg-teal-50 text-teal-800' : 'bg-violet-50 text-violet-800'}">${k === 'f' ? '상시 비치' : '대여 상품'}</span></td>
+      <td class="py-2 px-2 text-right tabular-nums">${fmt(price)}</td>
+      <td class="py-2 px-2 text-right tabular-nums">${qty}</td>
+      <td class="py-2 px-2 text-right tabular-nums font-semibold">${won(price * qty)}</td>
+      <td class="py-2 px-2 text-[12px] ${note.startsWith('⚠') ? 'text-rose-600' : 'text-slate-500'}">${esc(note)}</td>
+    </tr>`).join('');
+  document.getElementById('gear-picked').textContent = picked.size;
+}
+
+function renderKey(key) {
+  if (key === 'header') renderHeader();
+  else if (key === 'steps') renderTimeline();
+  else if (key.startsWith('disc:')) renderDisc(+key.split(':')[1]);
+  else if (key.startsWith('cost:')) renderCost(key);
+  else if (key === 'tiles' || key === 'fields') renderInputs(key);
+  else if (key === 'gear') renderGear();
+  applyEditable();
+}
+function renderAll() {
+  renderHeader(); renderTimeline(); renderDiscuss(); renderTracks(); renderBuildCards(); renderGear(); applyEditable();
+}
+
+/* ───────── 편집 → 상태 ───────── */
+function setPath(key, path, value) {
+  if (!path.length) { S[key] = value; return; }
+  let o = S[key];
+  for (let k = 0; k < path.length - 1; k++) o = o[path[k]];
+  o[path[path.length - 1]] = value;
+}
+
+document.addEventListener('input', e => {
+  const el = e.target, bind = el.dataset.bind;
+  if (!bind) return;
+  const [key, ...path] = bind.split('|');
+  if (!(key in S)) return;
+  let value;
+  if (el.isContentEditable) value = el.innerText.replace(/\n+/g, ' ');
+  else if (el.type === 'checkbox') value = el.checked;
+  else if ('num' in el.dataset) {
+    const n = +el.value.replace(/[^0-9]/g, '');
+    el.value = n ? fmt(n) : '';
+    value = n;
+  } else value = el.value;
+  setPath(key, path, value);
+  if (key.startsWith('cost:')) updateCostTotal(key);
+  if (key.startsWith('disc:') && path[0] === 'done') { el.closest('.disc').classList.toggle('disc-done', value); updateDiscCount(); }
+  queueSave(key, el.type === 'checkbox' ? 0 : 600);
+});
+document.addEventListener('change', e => {
+  if (e.target.dataset.gear !== undefined) {
+    const i = +e.target.dataset.gear, set = new Set(S.gear.picked);
+    e.target.checked ? set.add(i) : set.delete(i);
+    S.gear.picked = [...set].sort((a, b) => a - b);
+    document.getElementById('gear-picked').textContent = set.size;
+    queueSave('gear', 0);
+  }
+});
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-act]'); if (!btn) return;
+  const key = btn.dataset.key, j = +btn.dataset.j;
+  if (btn.dataset.act === 'pt-del') S[key].points.splice(j, 1);
+  else if (btn.dataset.act === 'pt-add') S[key].points.push('');
+  else if (btn.dataset.act === 'cost-del') S[key].splice(j, 1);
+  else if (btn.dataset.act === 'cost-add') S[key].push({ name:'', desc:'', amt:0 });
+  else if (btn.dataset.act === 'cost-reset') S[key] = clone(DEFAULTS[key]);
+  renderKey(key);
+  queueSave(key, 0);
+  if (btn.dataset.act === 'pt-add') document.querySelector(`[data-region="${key}"] li:last-child [data-edit]`)?.focus();
+  if (btn.dataset.act === 'cost-add') document.querySelector(`[data-region="${key}"] tr:last-child input`)?.focus();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.isContentEditable) { e.preventDefault(); e.target.blur(); }
+});
+
+/* 편집 모드 */
+let editing = false;
+function applyEditable() {
+  document.querySelectorAll('[data-edit]').forEach(el => { el.contentEditable = editing; });
+}
+function setEditing(on) {
+  editing = on;
+  document.body.classList.toggle('editing', on);
+  applyEditable();
+  const b = document.getElementById('edit-toggle');
+  b.textContent = on ? '✅ 수정 완료' : '✏️ 내용 수정';
+  b.style.background = on ? '#0d9488' : ''; b.style.color = on ? '#fff' : ''; b.style.borderColor = on ? '#0d9488' : '';
+}
+document.getElementById('edit-toggle').addEventListener('click', () => setEditing(!editing));
+
+/* 탭 */
+function setTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('hidden', p.id !== 'tab-' + tab));
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    const on = b.dataset.tab === tab;
+    b.style.background = on ? '#0d9488' : ''; b.style.color = on ? '#fff' : '#475569';
+  });
+  document.getElementById('edit-toggle').classList.toggle('hidden', tab !== 'meeting');
+  if (tab !== 'meeting' && editing) setEditing(false);
+  history.replaceState(null, '', '#' + tab);
+}
+document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+
+/* ───────── 공유 저장 (Supabase) ───────── */
+const CFG = window.FOCUS_CONFIG || {};
+const TABLE = CFG.table || 'focus_state';
+const db = (CFG.url && CFG.anonKey && window.supabase) ? window.supabase.createClient(CFG.url, CFG.anonKey) : null;
+const timers = {}, pending = new Set(), deferred = {};
+let failed = false;
+
+function setSync(state, text) {
+  const colors = { ok:'#10b981', saving:'#f59e0b', error:'#ef4444', off:'#94a3b8' };
+  document.getElementById('sync-dot').style.background = colors[state];
+  document.getElementById('sync-text').textContent = text;
+}
+
+function queueSave(key, delay) {
+  if (!db) return;
+  pending.add(key);
+  setSync('saving', '저장 중…');
+  clearTimeout(timers[key]);
+  timers[key] = setTimeout(() => save(key), delay);
+}
+async function save(key) {
+  const { error } = await db.from(TABLE).upsert({ key, data: S[key], updated_at: new Date().toISOString() });
+  if (error) { failed = true; setSync('error', '저장 실패 — 다시 시도 중'); console.error(error); setTimeout(() => save(key), 3000); return; }
+  pending.delete(key);
+  failed = false;
+  if (!pending.size) setSync('ok', '저장됨 · 실시간 공유 중');
+}
+
+function isEditingKey(key) {
+  const b = document.activeElement?.dataset?.bind;
+  return !!b && b.split('|')[0] === key;
+}
+function applyRemote(key, data) {
+  if (!(key in DEFAULTS) || pending.has(key)) return;
+  if (JSON.stringify(S[key]) === JSON.stringify(data)) return;
+  if (isEditingKey(key)) { deferred[key] = data; return; }
+  S[key] = data;
+  renderKey(key);
+  const region = document.querySelector(`[data-region="${key}"]`);
+  if (region) { region.classList.remove('flash'); void region.offsetWidth; region.classList.add('flash'); }
+}
+document.addEventListener('focusout', () => setTimeout(() => {
+  Object.keys(deferred).forEach(k => { if (!isEditingKey(k)) { const d = deferred[k]; delete deferred[k]; applyRemote(k, d); } });
+}, 0));
+
+async function loadAll() {
+  const { data, error } = await db.from(TABLE).select('key,data');
+  if (error) throw error;
+  data.forEach(r => { if (r.key in DEFAULTS && !pending.has(r.key)) S[r.key] = r.data; });
+}
+
+async function start() {
+  renderAll();
+  setTab(location.hash === '#build' ? 'build' : 'meeting');
+  const note = document.getElementById('footer-note');
+  if (!db) {
+    setSync('off', '저장 연결 안 됨');
+    note.textContent = '저장소가 연결되지 않아 입력 내용이 저장되지 않습니다 · 새로고침하면 초기화';
+    return;
+  }
+  note.textContent = '고친 내용은 자동 저장되어 링크로 접속한 모두에게 바로 보입니다';
+  try {
+    await loadAll();
+    renderAll();
+    setSync('ok', '저장됨 · 실시간 공유 중');
+  } catch (e) {
+    console.error(e);
+    setSync('error', '불러오기 실패 — 새로고침 해 주세요');
+    return;
+  }
+  db.channel('focus-state')
+    .on('postgres_changes', { event: '*', schema: 'public', table: TABLE }, p => { if (p.new?.key) applyRemote(p.new.key, p.new.data); })
+    .subscribe(status => {
+      if (status === 'SUBSCRIBED' && !pending.size && !failed) setSync('ok', '저장됨 · 실시간 공유 중');
+      if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') setSync('saving', '실시간 연결 재시도 중');
+    });
+  // 탭으로 돌아올 때 한 번 더 맞추기 (실시간이 끊겼을 때 대비)
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState !== 'visible') return;
+    try {
+      const { data } = await db.from(TABLE).select('key,data');
+      data?.forEach(r => applyRemote(r.key, r.data));
+    } catch (_) {}
+  });
+}
+start();
+</script>
+</body>
+</html>
