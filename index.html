@@ -102,15 +102,36 @@
       <div id="tracks" class="grid lg:grid-cols-3 gap-4"></div>
     </section>
 
+    <!-- 투자 구분 -->
+    <section class="grid sm:grid-cols-2 gap-3 mb-6">
+      <div class="rounded-2xl border-2 border-sky-200 bg-sky-50/70 p-4">
+        <div class="flex items-center justify-between gap-2">
+          <div class="font-bold text-sky-900">🔵 피코 투자</div>
+          <div class="text-right"><div class="text-[11px] text-sky-700">합계</div><div id="inv-pico" class="text-xl font-extrabold text-sky-900"></div></div>
+        </div>
+        <div class="mt-2 text-sm text-sky-900/80">🪨 파쇄석 공사 <b id="inv-pico-gravel" class="float-right"></b></div>
+      </div>
+      <div class="rounded-2xl border-2 border-violet-200 bg-violet-50/70 p-4">
+        <div class="flex items-center justify-between gap-2">
+          <div class="font-bold text-violet-900">🟣 캠핏 투자</div>
+          <div class="text-right"><div class="text-[11px] text-violet-700">합계</div><div id="inv-camp" class="text-xl font-extrabold text-violet-900"></div></div>
+        </div>
+        <div class="mt-2 text-sm text-violet-900/80 space-y-0.5">
+          <div>⛺ 풀타프 · 외부 시설 <b id="inv-camp-tarp" class="float-right"></b></div>
+          <div>🛋 내부 장비 리스트 <b id="inv-camp-gear" class="float-right"></b></div>
+        </div>
+      </div>
+    </section>
+
     <div class="grid lg:grid-cols-2 gap-4 mb-6">
-      <section id="gravel" class="rounded-3xl bg-white border border-slate-200 shadow-sm p-5 sm:p-6"></section>
-      <section id="tarp" class="rounded-3xl bg-white border border-slate-200 shadow-sm p-5 sm:p-6"></section>
+      <section id="gravel" class="rounded-3xl bg-white border border-slate-200 border-t-4 border-t-sky-400 shadow-sm p-5 sm:p-6"></section>
+      <section id="tarp" class="rounded-3xl bg-white border border-slate-200 border-t-4 border-t-violet-400 shadow-sm p-5 sm:p-6"></section>
     </div>
 
-    <section class="rounded-3xl bg-white border border-slate-200 shadow-sm p-5 sm:p-6">
+    <section class="rounded-3xl bg-white border border-slate-200 border-t-4 border-t-violet-400 shadow-sm p-5 sm:p-6">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
         <div>
-          <h2 class="font-bold text-lg">🛋 내부 장비 리스트</h2>
+          <h2 class="font-bold text-lg flex items-center gap-2">🛋 내부 장비 리스트 <span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span></h2>
           <p class="text-xs text-slate-500 mt-0.5">시뮬레이션 기본값(2026-10-07) 기준 · 김경수 구매 리스트(쿠팡 등) 확정 시 교체 · 1세트 선주문 → 현장 검증 → 추가 발주</p>
         </div>
         <div class="flex gap-2 text-xs">
@@ -164,23 +185,23 @@ const fmt = n => (n || 0).toLocaleString('ko-KR');
 const won = n => n >= 10000 ? (n / 10000).toLocaleString('ko-KR', { maximumFractionDigits: 1 }) + '만' : fmt(n) + '원';
 
 /* ───────── 기본값 — 저장된 값이 없을 때만 쓰임 ───────── */
+// id 는 저장 키(disc:<id>)라 바꾸면 저장된 내용과 연결이 끊김 — 순서는 배열 순서로 정함
 const DISC_DEFAULTS = [
-  { icon:'⛺', title:'풀타프 최종 스펙 및 컬러',
-    points:['기본형 설계는 확정 — 세부 스펙(재질 등) 최종 확인', '스킨 컬러 결정 — 전달 전까지 시호이엔씨 진행 불가', '1차 6동 설치 → 구역 확장 후 2동 추가 설치 (총 8동)', '11/1 1차 설치 일정 시호이엔씨와 확정'] },
-  { icon:'🛋', title:'최종 세팅 장비',
+  { id:'tarp', icon:'⛺', title:'풀타프 최종 스펙 및 컬러',
+    points:['기본형 설계는 확정 — 세부 스펙(4.5x6m) 최종 확인', '스킨 컬러(카키) 결정 — 전달 전까지 시호이엔씨 진행 불가', '1차 6동 설치 → 구역 확장 후 2동 추가 설치 (총 8동)', '11/1 1차 설치 일정 시호이엔씨와 확정'] },
+  { id:'gear', icon:'🛋', title:'최종 세팅 장비',
     points:['김경수 정리 구매 리스트 검토', '구역마다 상시 비치할 품목 확정', '대여용으로 둘 품목 구분'] },
-  { icon:'📦', title:'장비 1세트 구매 · 검증 후 추가 발주',
+  { id:'set1', icon:'📦', title:'장비 1세트 구매 · 검증 후 추가 발주',
     points:['1세트 품목 확정 · 주문 시점', '현장 검증 기준 (누가, 무엇을 볼지)', '추가 발주 수량(6세트) · 11/1 타프 설치에 맞춘 시점'] },
-  { icon:'💳', title:'캠핏 비용처리 어떻게?',
+  { id:'cost', icon:'💳', title:'캠핏 비용처리 어떻게?',
     points:['공사·풀타프·장비 비용을 누가 부담할지', '발주·결제 명의와 세금계산서 처리', '지출 승인 기준 · 증빙 관리 방법'] },
-  { icon:'🎈', title:'컨셉 회의 — 다음 주 월요일(10/26)',
-    points:['컨셉에 맞춰 추가 장비 품목 확정', '에어바운스 · 체험 장비 등', '참석자 · 미팅 등록'] },
-  { icon:'🏕', title:'캠핏 보유 오투라이프 에어텐트 활용',
+  { id:'airtent', icon:'🏕', title:'캠핏 보유 오투라이프 에어텐트 활용',
     points:['활용 방식 — 구역 비치 / 대여 상품 / 단체·체험용 등'] },
-  { icon:'🧾', title:'적용 플랜 수수료',
+  { id:'fee', icon:'🧾', title:'적용 플랜 수수료',
     points:['적용할 플랜과 수수료율 결정', '참고: 시뮬레이션 기본값은 캠핏 투자 0원일 때 매출의 16.5%', '참고: A안(프렌들리) · B안(전수창업) 비교안 있음'] },
-  { icon:'📣', title:'오픈 세팅 및 마케팅(안)',
-    points:['풀타프 설치 전 — 일반 사이트로 판매 오픈 (개인 장비 지참 고객)', '11/2 이후 — 단체 예약 · 풀세팅(장비 포함) 컨셉으로 전환', '플랫폼 노출 세팅', '우성님께 인플루언서 모집 요청'] },
+  { id:'concept', icon:'🎈', title:'컨셉 회의 — 다음 주 월요일(10/26)', wide:true,
+    label:'컨셉 · 추가 장비', points:['컨셉에 맞춰 추가 장비 품목 확정', '에어바운스 · 체험 장비 등', '참석자 · 미팅 등록'],
+    label2:'📣 오픈 세팅 및 마케팅(안)', points2:['풀타프 설치 전 — 일반 사이트로 판매 오픈 (개인 장비 지참 고객)', '11/2 이후 — 단체 예약 · 풀세팅(장비 포함) 컨셉으로 전환', '플랫폼 노출 세팅', '우석님께 인플루언서 모집 요청'] },
 ];
 
 const DEFAULTS = {
@@ -208,7 +229,7 @@ const DEFAULTS = {
   tiles: { area:'약 900평', thick:'5cm', design:'기본형 확정', qty:'6동 + 2동' },
   fields: { gVendor:'', gQuote:'', gDate:'', tColor:'', tMaterial:'', tDate:'' },
 };
-DISC_DEFAULTS.forEach((d, i) => { DEFAULTS['disc:' + i] = { ...d, done:false, memo:'' }; });
+DISC_DEFAULTS.forEach(({ id, wide, label, label2, ...d }) => { DEFAULTS['disc:' + id] = { ...d, done:false, memo:'' }; });
 
 const GEAR = [
   ['스탠드형 냉난방기', 'f', 1500000, 7, '4계절 기본 냉난방'],
@@ -245,27 +266,27 @@ const MEDIA = {
   drawing: { src:'assets/tarp-drawing-4.5x6.png', title:'📐 풀타프 도면 — 4.5 × 6m (시호이엔씨)', cap:'평면 6,000 × 4,500 · 높이 3,400 (벽 2,000 + 지붕 1,400) · 각관 프레임 1동 기준' },
   khaki:   { src:'assets/tarp-color-khaki.jpg', title:'🎨 스킨 컬러 예시 — 카키', cap:'카키 컬러 참고 이미지' },
 };
-const ATTACH = { 0: ['drawing', 'khaki'] };   // 의논 사항 카드 번호(0부터) → 첨부
+const ATTACH = { tarp: ['drawing', 'khaki'] };   // 의논 사항 카드 id → 첨부
 const mediaBtn = id => id === 'drawing'
   ? `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 hover:bg-sky-100" data-media="drawing">📐 도면 보기 <span class="font-normal text-sky-600">4.5×6m</span></button>`
   : `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-[#eef0e6] text-[#4b5320] border border-[#c9cdb4] hover:bg-[#e3e6d6]" data-media="khaki"><span class="h-3 w-3 rounded-full bg-[#5b6146] ring-1 ring-black/10"></span>컬러 예시 <span class="font-normal opacity-75">카키</span></button>`;
 
 const TRACKS = [
-  { icon:'🪨', title:'파쇄석', owner:'지환', steps:[
+  { icon:'🪨', title:'파쇄석', owner:'지환', inv:'pico', steps:[
     { date:'10/19', text:'여주 인근 업체 섭외 · 단가/일정/추가비용 확인' },
     { date:'10/21', text:'현장 견적 미팅 (수요일 방문 때)' },
     { date:'미정',  text:'업체 확정 · 계약' },
     { date:'미정',  text:'공사 착수 (정지 → 파쇄석 → 석분 · 다짐)' },
     { date:'10/30', text:'공사 완료', goal:true },
   ] },
-  { icon:'⛺', title:'풀타프', owner:'시호이엔씨', steps:[
+  { icon:'⛺', title:'풀타프', owner:'시호이엔씨', inv:'camp', steps:[
     { date:'완료',  text:'기본형 설계 확정', done:true },
     { date:'10/20', text:'최종 스펙 · 스킨 컬러 확정 (포커스 미팅)' },
     { date:'10/21', text:'현장 검토 — 시호이엔씨 양평 몽 캠핑장 방문' },
     { date:'11/1',  text:'1차 풀타프 6동 설치 (파쇄석 완료 후)', goal:true },
     { date:'미정',  text:'구역 확장 후 풀타프 2동 추가 설치' },
   ] },
-  { icon:'🛋', title:'내부 장비', owner:'김경수', steps:[
+  { icon:'🛋', title:'내부 장비', owner:'김경수', inv:'camp', steps:[
     { date:'10/20', text:'구매 리스트 공유 (포커스 미팅)' },
     { date:'미정',  text:'1세트 우선 주문' },
     { date:'미정',  text:'현장 검증 → 품목 최종 확정' },
@@ -303,21 +324,31 @@ function renderTimeline() {
   }).join('');
 }
 
-function discCard(i) {
-  const key = 'disc:' + i, d = S[key];
-  return `<article class="disc ${d.done ? 'disc-done' : ''} rounded-3xl shadow-sm p-5 h-full bg-white border border-slate-200 flex flex-col transition-colors" data-region="${key}">
+function pointList(key, field, list) {
+  return `<ul class="mt-2 space-y-1.5 text-[14px] text-slate-600" data-list="${field}">
+      ${list.map((p, j) => `<li class="flex gap-2 items-start ${p.startsWith('참고') ? 'text-slate-400 text-[13px]' : ''}"><span class="text-slate-300">•</span><span class="flex-1" data-edit data-bind="${key}|${field}|${j}" data-ph="내용 입력">${esc(p)}</span><button class="edit-only no-print h-5 w-5 flex-none items-center justify-center rounded text-slate-300 hover:text-rose-600 hover:bg-rose-50" data-act="pt-del" data-key="${key}" data-field="${field}" data-j="${j}" title="삭제">✕</button></li>`).join('')}
+    </ul>
+    <button class="edit-only no-print mt-2 self-start text-xs px-2.5 py-1 rounded-lg border border-dashed border-slate-300 text-slate-500 hover:bg-slate-50" data-act="pt-add" data-key="${key}" data-field="${field}">＋ 내용 추가</button>`;
+}
+
+function discCard(idx) {
+  const def = DISC_DEFAULTS[idx], key = 'disc:' + def.id, d = S[key];
+  const lists = def.wide
+    ? `<div class="mt-2 grid md:grid-cols-2 gap-x-8 gap-y-3">
+        <div class="flex flex-col"><div class="text-xs font-bold text-slate-500 mt-1">${esc(def.label)}</div>${pointList(key, 'points', d.points || [])}</div>
+        <div class="flex flex-col md:border-l md:border-slate-100 md:pl-8"><div class="text-xs font-bold text-slate-500 mt-1">${esc(def.label2)}</div>${pointList(key, 'points2', d.points2 || [])}</div>
+      </div>`
+    : `<div class="flex flex-col mt-1">${pointList(key, 'points', d.points || [])}</div>`;
+  return `<article class="disc ${d.done ? 'disc-done' : ''} ${def.wide ? 'md:col-span-2' : ''} rounded-3xl shadow-sm p-5 h-full bg-white border border-slate-200 flex flex-col transition-colors" data-region="${key}">
     <div class="flex items-start gap-3">
-      <span class="disc-num h-8 min-w-[32px] px-1.5 flex-none rounded-xl bg-amber-100 text-amber-800 grid place-content-center text-sm font-extrabold transition-colors">${i + 1}</span>
+      <span class="disc-num h-8 min-w-[32px] px-1.5 flex-none rounded-xl bg-amber-100 text-amber-800 grid place-content-center text-sm font-extrabold transition-colors">${idx + 1}</span>
       <h3 class="flex-1 min-w-0 font-bold text-[16px] leading-snug pt-1">${d.icon} <span data-edit data-bind="${key}|title" data-ph="안건 제목">${esc(d.title)}</span></h3>
       <label class="no-print flex items-center gap-1.5 text-xs text-slate-500 cursor-pointer select-none whitespace-nowrap pt-1.5">
         <input type="checkbox" class="chk" data-bind="${key}|done" ${d.done ? 'checked' : ''}> 결정 완료
       </label>
     </div>
-    <ul class="mt-3 space-y-1.5 text-[14px] text-slate-600">
-      ${d.points.map((p, j) => `<li class="flex gap-2 items-start ${p.startsWith('참고') ? 'text-slate-400 text-[13px]' : ''}"><span class="text-slate-300">•</span><span class="flex-1" data-edit data-bind="${key}|points|${j}" data-ph="내용 입력">${esc(p)}</span><button class="edit-only no-print h-5 w-5 flex-none items-center justify-center rounded text-slate-300 hover:text-rose-600 hover:bg-rose-50" data-act="pt-del" data-key="${key}" data-j="${j}" title="삭제">✕</button></li>`).join('')}
-    </ul>
-    <button class="edit-only no-print mt-2 self-start text-xs px-2.5 py-1 rounded-lg border border-dashed border-slate-300 text-slate-500 hover:bg-slate-50" data-act="pt-add" data-key="${key}">＋ 내용 추가</button>
-    ${ATTACH[i] ? `<div class="no-print mt-3 flex flex-wrap gap-2">${ATTACH[i].map(mediaBtn).join('')}</div>` : ''}
+    ${lists}
+    ${ATTACH[def.id] ? `<div class="no-print mt-3 flex flex-wrap gap-2">${ATTACH[def.id].map(mediaBtn).join('')}</div>` : ''}
     <textarea rows="2" placeholder="결정 내용 · 담당 · 기한" data-bind="${key}|memo" class="mt-4 flex-1 min-h-[60px] w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">${esc(d.memo)}</textarea>
   </article>`;
 }
@@ -326,15 +357,16 @@ function renderDiscuss() {
   document.getElementById('discuss').innerHTML = DISC_DEFAULTS.map((_, i) => discCard(i)).join('');
   updateDiscCount();
 }
-function renderDisc(i) {
-  const old = document.querySelector(`[data-region="disc:${i}"]`);
-  if (!old) return renderDiscuss();
-  old.outerHTML = discCard(i);
+function renderDisc(id) {
+  const idx = DISC_DEFAULTS.findIndex(d => d.id === id);
+  const old = document.querySelector(`[data-region="disc:${id}"]`);
+  if (idx < 0 || !old) return renderDiscuss();
+  old.outerHTML = discCard(idx);
   updateDiscCount();
 }
 function updateDiscCount() {
   const total = DISC_DEFAULTS.length;
-  const n = DISC_DEFAULTS.filter((_, i) => S['disc:' + i].done).length;
+  const n = DISC_DEFAULTS.filter(d => S['disc:' + d.id].done).length;
   document.getElementById('disc-done').textContent = n;
   document.getElementById('disc-total').textContent = total;
   document.getElementById('disc-bar').style.width = Math.round(n / total * 100) + '%';
@@ -342,9 +374,9 @@ function updateDiscCount() {
 
 function renderTracks() {
   document.getElementById('tracks').innerHTML = TRACKS.map(tr => `
-    <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+    <div class="rounded-2xl bg-slate-50 border border-slate-200 border-t-4 ${tr.inv === 'pico' ? 'border-t-sky-400' : 'border-t-violet-400'} p-4">
       <div class="flex items-center justify-between mb-3">
-        <h3 class="font-bold">${tr.icon} ${tr.title}</h3>
+        <h3 class="font-bold flex items-center gap-1.5">${tr.icon} ${tr.title} ${tr.inv === 'pico' ? '<span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span>' : '<span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span>'}</h3>
         <span class="text-[11px] px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-600">${esc(tr.owner)}</span>
       </div>
       <ol class="relative ml-1.5 border-l-2 border-slate-200 space-y-3">
@@ -380,7 +412,7 @@ const costBox = key => `<div class="cost mt-3" data-region="${key}">
 function renderBuildCards() {
   document.getElementById('gravel').innerHTML = `
     <div class="flex items-start justify-between gap-2">
-      <h2 class="font-bold text-lg">🪨 파쇄석 공사</h2>
+      <h2 class="font-bold text-lg flex items-center gap-2">🪨 파쇄석 공사 <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
       <span class="text-xs px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-semibold">업체 섭외 중</span>
     </div>
     <div class="mt-3 grid grid-cols-3 gap-2 text-center">${tile('면적', 'tiles|area')}${tile('두께', 'tiles|thick')}${fixedTile('완료 목표', '10/30')}</div>
@@ -389,7 +421,7 @@ function renderBuildCards() {
     <p class="mt-3 text-[12px] text-slate-500">견적 때 확인: 운반비·부가세 포함 여부 · 파쇄석 규격 · 25t 트럭 진입 가능 여부 · 하자 보수</p>`;
   document.getElementById('tarp').innerHTML = `
     <div class="flex items-start justify-between gap-2">
-      <h2 class="font-bold text-lg">⛺ 풀타프 · 외부 시설</h2>
+      <h2 class="font-bold text-lg flex items-center gap-2">⛺ 풀타프 · 외부 시설 <span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span></h2>
       <span class="text-xs px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-semibold">컬러 미정</span>
     </div>
     <div class="no-print mt-3 flex flex-wrap gap-2">${mediaBtn('drawing')}${mediaBtn('khaki')}</div>
@@ -426,9 +458,19 @@ function renderCost(key) {
     </tr>`).join('') : '<tr><td class="py-3 text-center text-xs text-slate-400">항목이 없습니다</td></tr>';
   updateCostTotal(key);
 }
+const costSum = key => S[key].reduce((s, r) => s + (r.amt || 0), 0);
 function updateCostTotal(key) {
-  const total = S[key].reduce((s, r) => s + (r.amt || 0), 0);
+  const total = costSum(key);
   document.querySelector(`.cost[data-region="${key}"] .cost-total`).textContent = won(total) + ' (' + fmt(total) + '원)';
+  updateInvest();
+}
+// 투자 구분 — 파쇄석 = 피코, 풀타프·외부 시설 + 내부 장비 = 캠핏
+function updateInvest() {
+  if (!S.gearList) return;
+  const g = costSum('cost:gravel'), tp = costSum('cost:tarp'), ge = S.gearList.reduce((s, r) => s + rowAmt(r), 0);
+  const put = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = won(v); };
+  put('inv-pico', g); put('inv-pico-gravel', g);
+  put('inv-camp', tp + ge); put('inv-camp-tarp', tp); put('inv-camp-gear', ge);
 }
 
 const rowAmt = r => r.amt ?? (r.price || 0) * (r.qty || 0);
@@ -439,6 +481,7 @@ function updateGearTotals() {
   const total = L.reduce((s, r) => s + rowAmt(r), 0);
   document.getElementById('gear-total').textContent = won(total) + ' (' + fmt(total) + '원)';
   document.getElementById('gear-picked').textContent = L.filter(r => r.picked).length;
+  updateInvest();
 }
 const gIn = 'w-full bg-transparent rounded px-1.5 py-1 focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500';
 function renderGear() {
@@ -464,7 +507,7 @@ function renderGear() {
 function renderKey(key) {
   if (key === 'header') renderHeader();
   else if (key === 'steps') renderTimeline();
-  else if (key.startsWith('disc:')) renderDisc(+key.split(':')[1]);
+  else if (key.startsWith('disc:')) renderDisc(key.slice(5));
   else if (key.startsWith('cost:')) renderCost(key);
   else if (key === 'tiles' || key === 'fields') renderInputs(key);
   else if (key === 'gearList') renderGear();
@@ -514,8 +557,9 @@ document.addEventListener('input', e => {
 document.addEventListener('click', e => {
   const btn = e.target.closest('[data-act]'); if (!btn) return;
   const key = btn.dataset.key, j = +btn.dataset.j;
-  if (btn.dataset.act === 'pt-del') S[key].points.splice(j, 1);
-  else if (btn.dataset.act === 'pt-add') S[key].points.push('');
+  const field = btn.dataset.field || 'points';
+  if (btn.dataset.act === 'pt-del') S[key][field].splice(j, 1);
+  else if (btn.dataset.act === 'pt-add') (S[key][field] ||= []).push('');
   else if (btn.dataset.act === 'cost-del') S[key].splice(j, 1);
   else if (btn.dataset.act === 'cost-add') S[key].push({ name:'', desc:'', amt:0 });
   else if (btn.dataset.act === 'cost-reset') S[key] = clone(DEFAULTS[key]);
@@ -524,7 +568,7 @@ document.addEventListener('click', e => {
   else if (btn.dataset.act === 'gear-reset') { if (!confirm('장비 리스트를 처음 값으로 되돌릴까요? 모두의 화면에 반영됩니다.')) return; S.gearList = clone(DEFAULTS.gearList); }
   renderKey(key);
   queueSave(key, 0);
-  if (btn.dataset.act === 'pt-add') document.querySelector(`[data-region="${key}"] li:last-child [data-edit]`)?.focus();
+  if (btn.dataset.act === 'pt-add') document.querySelector(`[data-region="${key}"] [data-list="${field}"] li:last-child [data-edit]`)?.focus();
   if (btn.dataset.act === 'cost-add') document.querySelector(`[data-region="${key}"] tr:last-child input`)?.focus();
   if (btn.dataset.act === 'gear-add') document.querySelector('#gear-rows tr:last-child [data-bind$="|name"]')?.focus();
 });
