@@ -140,6 +140,11 @@
         </div>
       </div>
       <div class="mt-4 overflow-x-auto -mx-2" data-region="gearList">
+        <div class="no-print px-2 mb-3 inline-flex rounded-xl bg-slate-100 p-1 text-sm" id="gear-tabs">
+          <button data-gear-view="all" class="gear-tab px-3.5 py-1.5 rounded-lg font-semibold">전체 <span class="gt-n text-xs opacity-70"></span></button>
+          <button data-gear-view="f" class="gear-tab px-3.5 py-1.5 rounded-lg font-semibold">상시 비치 <span class="gt-n text-xs opacity-70"></span></button>
+          <button data-gear-view="r" class="gear-tab px-3.5 py-1.5 rounded-lg font-semibold">대여 상품 <span class="gt-n text-xs opacity-70"></span></button>
+        </div>
         <div class="px-2 mb-2 flex flex-wrap items-center gap-2 text-xs">
           <span class="font-semibold text-slate-500">상태</span>
           <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-semibold">확정 <b id="st-ok">0</b></span>
@@ -495,6 +500,7 @@ function updateGearTotals() {
   document.getElementById('gear-total').textContent = won(total) + ' (' + fmt(total) + '원)';
   document.getElementById('gear-picked').textContent = L.filter(r => r.picked).length;
   updateInvest();
+  if (typeof renderGearTabs === 'function') renderGearTabs();
 }
 const gIn = 'w-full bg-transparent rounded px-1.5 py-1 focus:outline-none focus:bg-white focus:ring-2 focus:ring-brand-500';
 function gearMedia(r, i) {
@@ -509,8 +515,26 @@ function gearLink(r) {
   const url = safeUrl(r.url);
   return url ? `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 flex-none whitespace-nowrap text-[11px] font-bold px-2 py-1 rounded-lg bg-brand-600 text-white hover:bg-brand-700">${esc(storeOf(url) || '구매')} ↗</a>` : '';
 }
+let gearView = 'all';   // 보는 사람마다 따로 — 저장 안 함
+const gearVisible = () => S.gearList.map((r, i) => i).filter(i => gearView === 'all' || S.gearList[i].kind === gearView);
+function renderGearTabs() {
+  document.querySelectorAll('.gear-tab').forEach(b => {
+    const v = b.dataset.gearView, on = v === gearView;
+    const L = S.gearList.filter(r => v === 'all' || r.kind === v);
+    const amt = L.filter(r => r.status !== 'reject').reduce((s, r) => s + rowAmt(r), 0);
+    b.querySelector('.gt-n').textContent = `${L.length} · ${won(amt)}`;
+    b.style.background = on ? '#fff' : ''; b.style.color = on ? (v === 'r' ? '#5b21b6' : v === 'f' ? '#115e59' : '#0f172a') : '#64748b';
+    b.style.boxShadow = on ? '0 1px 2px rgba(0,0,0,.08)' : '';
+  });
+}
+document.getElementById('gear-tabs').addEventListener('click', e => {
+  const b = e.target.closest('[data-gear-view]'); if (!b) return;
+  gearView = b.dataset.gearView; renderGear();
+});
 function renderGear() {
-  document.getElementById('gear-rows').innerHTML = S.gearList.length ? S.gearList.map((r, i) => {
+  const vis = gearVisible();
+  document.getElementById('gear-rows').innerHTML = vis.length ? vis.map((i, pos) => {
+    const r = S.gearList[i];
     const st = r.status || 'review';
     return `
     <tr class="border-b border-slate-100 hover:bg-slate-50 align-top ${st === 'reject' ? 'opacity-50' : ''}" data-gear-row="${i}">
@@ -545,13 +569,14 @@ function renderGear() {
       <td class="py-2 px-1"><input class="${gIn} text-[12px] ${String(r.note).startsWith('⚠') ? 'text-rose-600' : 'text-slate-500'}" data-bind="gearList|${i}|note" value="${esc(r.note)}" placeholder="메모"></td>
       <td class="py-2 px-1 no-print">
         <div class="flex flex-col items-center gap-0.5">
-          <button class="h-6 w-7 rounded-md text-slate-400 hover:text-slate-800 hover:bg-slate-100 disabled:opacity-20 disabled:hover:bg-transparent" data-act="gear-up" data-key="gearList" data-j="${i}" title="위로" ${i === 0 ? 'disabled' : ''}>▲</button>
-          <button class="h-6 w-7 rounded-md text-slate-400 hover:text-slate-800 hover:bg-slate-100 disabled:opacity-20 disabled:hover:bg-transparent" data-act="gear-down" data-key="gearList" data-j="${i}" title="아래로" ${i === S.gearList.length - 1 ? 'disabled' : ''}>▼</button>
+          <button class="h-6 w-7 rounded-md text-slate-400 hover:text-slate-800 hover:bg-slate-100 disabled:opacity-20 disabled:hover:bg-transparent" data-act="gear-up" data-key="gearList" data-j="${i}" title="위로" ${pos === 0 ? 'disabled' : ''}>▲</button>
+          <button class="h-6 w-7 rounded-md text-slate-400 hover:text-slate-800 hover:bg-slate-100 disabled:opacity-20 disabled:hover:bg-transparent" data-act="gear-down" data-key="gearList" data-j="${i}" title="아래로" ${pos === vis.length - 1 ? 'disabled' : ''}>▼</button>
           <button class="h-6 w-7 rounded-md text-slate-300 hover:text-rose-600 hover:bg-rose-50" data-act="gear-del" data-key="gearList" data-j="${i}" title="품목 삭제">✕</button>
         </div>
       </td>
     </tr>`; }).join('') : '<tr><td colspan="9" class="py-4 text-center text-xs text-slate-400">품목이 없습니다</td></tr>';
   updateGearTotals();
+  renderGearTabs();
 }
 
 function renderKey(key) {
@@ -599,6 +624,7 @@ document.addEventListener('input', e => {
     }
     if (f === 'amt') el.classList.add('text-amber-700');
     if (f === 'kind') { el.classList.toggle('text-teal-800', value === 'f'); el.classList.toggle('text-violet-800', value === 'r'); }
+    if (f === 'kind' && gearView !== 'all') { queueSave(key, 0); renderGear(); return; }
     const row = el.closest('[data-gear-row]');
     if (f === 'url' || f === 'image') {
       row.querySelector('.g-media').innerHTML = gearMedia(r, i);
@@ -626,15 +652,16 @@ document.addEventListener('click', e => {
   else if (btn.dataset.act === 'cost-reset') S[key] = clone(DEFAULTS[key]);
   else if (btn.dataset.act === 'gear-del') S.gearList.splice(j, 1);
   else if (btn.dataset.act === 'gear-up' || btn.dataset.act === 'gear-down') {
-    const to = btn.dataset.act === 'gear-up' ? j - 1 : j + 1;
-    if (to < 0 || to >= S.gearList.length) return;
+    const vis = gearVisible(), p = vis.indexOf(j);
+    const to = vis[btn.dataset.act === 'gear-up' ? p - 1 : p + 1];
+    if (to === undefined) return;
     [S.gearList[j], S.gearList[to]] = [S.gearList[to], S.gearList[j]];
     renderKey(key); queueSave(key, 300);
     const row = document.querySelector(`[data-gear-row="${to}"]`);
     row?.classList.add('flash'); row?.querySelector(`[data-act="${btn.dataset.act}"]:not([disabled])`)?.focus();
     return;
   }
-  else if (btn.dataset.act === 'gear-add') S.gearList.push({ name:'', kind:'f', price:0, qty:1, amt:null, note:'', picked:false, status:'review', url:'', image:'' });
+  else if (btn.dataset.act === 'gear-add') S.gearList.push({ name:'', kind: gearView === 'r' ? 'r' : 'f', price:0, qty:1, amt:null, note:'', picked:false, status:'review', url:'', image:'' });
   else if (btn.dataset.act === 'gear-reset') { if (!confirm('장비 리스트를 처음 값으로 되돌릴까요? 모두의 화면에 반영됩니다.')) return; S.gearList = clone(DEFAULTS.gearList); }
   renderKey(key);
   queueSave(key, 0);
