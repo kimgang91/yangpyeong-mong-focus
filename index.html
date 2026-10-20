@@ -111,6 +111,7 @@
         </div>
         <div class="mt-2 text-sm text-sky-900/80 space-y-0.5">
           <div>🔑 보증금 · 권리금 <b id="inv-pico-lease" class="float-right"></b></div>
+          <div>🛡 화재 · 책임보험 <b id="inv-pico-insure" class="float-right"></b></div>
           <div>🪨 파쇄석 공사 <b id="inv-pico-gravel" class="float-right"></b></div>
         </div>
       </div>
@@ -126,7 +127,10 @@
       </div>
     </section>
 
-    <section id="lease" class="rounded-3xl bg-white border border-slate-200 border-t-4 border-t-sky-400 shadow-sm p-5 sm:p-6 mb-6"></section>
+    <div class="grid lg:grid-cols-2 gap-4 mb-6">
+      <section id="lease" class="rounded-3xl bg-white border border-slate-200 border-t-4 border-t-sky-400 shadow-sm p-5 sm:p-6"></section>
+      <section id="insure" class="rounded-3xl bg-white border border-slate-200 border-t-4 border-t-sky-400 shadow-sm p-5 sm:p-6"></section>
+    </div>
 
     <div class="grid lg:grid-cols-2 gap-4 mb-6">
       <section id="gravel" class="rounded-3xl bg-white border border-slate-200 border-t-4 border-t-sky-400 shadow-sm p-5 sm:p-6"></section>
@@ -235,6 +239,9 @@ const DEFAULTS = {
   'cost:lease': [
     { name:'보증금', desc:'', amt:30000000 },
     { name:'권리금', desc:'', amt:10000000 },
+  ],
+  'cost:insure': [
+    { name:'화재 · 책임보험', desc:'', amt:1500000 },
   ],
   'cost:gravel': [
     { name:'파쇄석(쇄석) 포설', desc:'25t 1대 70만원 × 10대', amt:7000000 },
@@ -434,6 +441,9 @@ function renderBuildCards() {
   document.getElementById('lease').innerHTML = `
     <h2 class="font-bold text-lg flex items-center gap-2">🔑 보증금 · 권리금 <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
     ${costBox('cost:lease')}`;
+  document.getElementById('insure').innerHTML = `
+    <h2 class="font-bold text-lg flex items-center gap-2">🛡 화재 · 책임보험 <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
+    ${costBox('cost:insure')}`;
   document.getElementById('gravel').innerHTML = `
     <div class="flex items-start justify-between gap-2">
       <h2 class="font-bold text-lg flex items-center gap-2">🪨 파쇄석 공사 <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
@@ -454,7 +464,7 @@ function renderBuildCards() {
     <div class="mt-4 grid sm:grid-cols-3 gap-2">${field('스킨 컬러', 'fields|tColor', '미정')}${field('세부 재질', 'fields|tMaterial', '미정')}${field('설치일', 'fields|tDate', '11/1 목표')}</div>
     <p class="mt-3 text-[12px] text-slate-500">10/21 시호이엔씨 현장 검토 때 확인: 설치·운송·고정 포함 여부 · 방염 확인서 · 파쇄석 완료 후 설치</p>`;
   renderInputs('tiles'); renderInputs('fields');
-  renderCost('cost:lease'); renderCost('cost:gravel'); renderCost('cost:tarp');
+  renderCost('cost:lease'); renderCost('cost:insure'); renderCost('cost:gravel'); renderCost('cost:tarp');
 }
 
 function renderInputs(key) {
@@ -488,12 +498,12 @@ function updateCostTotal(key) {
   document.querySelector(`.cost[data-region="${key}"] .cost-total`).textContent = won(total) + ' (' + fmt(total) + '원)';
   updateInvest();
 }
-// 투자 구분 — 보증금·권리금·파쇄석 = 피코, 풀타프·외부 시설 + 내부 장비 = 캠핏
+// 투자 구분 — 보증금·권리금·보험·파쇄석 = 피코, 풀타프·외부 시설 + 내부 장비 = 캠핏
 function updateInvest() {
   if (!S.gearList) return;
-  const ls = costSum('cost:lease'), g = costSum('cost:gravel'), tp = costSum('cost:tarp'), ge = activeGear().reduce((s, r) => s + rowAmt(r), 0);
+  const ls = costSum('cost:lease'), ins = costSum('cost:insure'), g = costSum('cost:gravel'), tp = costSum('cost:tarp'), ge = activeGear().reduce((s, r) => s + rowAmt(r), 0);
   const put = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = won(v); };
-  put('inv-pico', ls + g); put('inv-pico-lease', ls); put('inv-pico-gravel', g);
+  put('inv-pico', ls + ins + g); put('inv-pico-lease', ls); put('inv-pico-insure', ins); put('inv-pico-gravel', g);
   put('inv-camp', tp + ge); put('inv-camp-tarp', tp); put('inv-camp-gear', ge);
 }
 
