@@ -293,6 +293,8 @@ const MEDIA = {
   khaki:   { src:'assets/tarp-color-khaki.jpg', title:'🎨 스킨 컬러 예시 — 카키', cap:'카키 컬러 참고 이미지' },
 };
 const ATTACH = { tarp: ['drawing', 'khaki'] };   // 의논 사항 카드 id → 첨부
+const REFS = { fee: [{ url:'https://kimgang91.github.io/crewcamp-yangpyeong/#11', label:'📊 참고자료 — A안(프렌들리) · B안(전수창업) 1년 매출 · 수수료 비교', sub:'16.5% vs 20%' }] };   // 의논 사항 카드 id → 참고 링크
+const refBtn = r => `<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-brand-50 text-brand-900 border border-brand-100 hover:bg-brand-100">${esc(r.label)} <span class="font-normal opacity-75">${esc(r.sub)}</span> ↗</a>`;
 const mediaBtn = id => id === 'drawing'
   ? `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 hover:bg-sky-100" data-media="drawing">📐 도면 보기 <span class="font-normal text-sky-600">4.5×6m</span></button>`
   : `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-[#eef0e6] text-[#4b5320] border border-[#c9cdb4] hover:bg-[#e3e6d6]" data-media="khaki"><span class="h-3 w-3 rounded-full bg-[#5b6146] ring-1 ring-black/10"></span>컬러 예시 <span class="font-normal opacity-75">카키</span></button>`;
@@ -375,6 +377,7 @@ function discCard(idx) {
     </div>
     ${lists}
     ${ATTACH[def.id] ? `<div class="no-print mt-3 flex flex-wrap gap-2">${ATTACH[def.id].map(mediaBtn).join('')}</div>` : ''}
+    ${REFS[def.id] ? `<div class="no-print mt-3 flex flex-wrap gap-2">${REFS[def.id].map(refBtn).join('')}</div>` : ''}
     <textarea rows="2" placeholder="결정 내용 · 담당 · 기한" data-bind="${key}|memo" class="mt-4 flex-1 min-h-[60px] w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white">${esc(d.memo)}</textarea>
   </article>`;
 }
