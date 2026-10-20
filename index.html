@@ -121,7 +121,7 @@
           <div class="text-right"><div class="text-[11px] text-violet-700">합계</div><div id="inv-camp" class="text-xl font-extrabold text-violet-900"></div></div>
         </div>
         <div class="mt-2 text-sm text-violet-900/80 space-y-0.5">
-          <div>⛺ 풀타프 · 외부 시설 <b id="inv-camp-tarp" class="float-right"></b></div>
+          <div>⛺ 풀타프 · 외부 시설 <span class="text-[11px] opacity-70">(VAT 포함)</span> <b id="inv-camp-tarp" class="float-right"></b></div>
           <div>🛋 내부 장비 리스트 <b id="inv-camp-gear" class="float-right"></b></div>
         </div>
       </div>
@@ -247,10 +247,9 @@ const DEFAULTS = {
     { name:'포크레인 (중장비)', desc:'1일 100만원 × 3일', amt:3000000 },
   ],
   'cost:tarp': [
-    { name:'프레임형 풀타프 1차 (게이블 · 일체형)', desc:'363.6만원 × 6동 · 11/1 설치', amt:21816000 },
-    { name:'프레임형 풀타프 추가', desc:'363.6만원 × 2동 · 구역 확장 후', amt:7272000 },
-    { name:'1.5×6m 모듈형 울타리', desc:'40만원 × 4 · 3·5구역 각 2모듈', amt:1600000 },
-    { name:'줄조명 파티라이트 6구', desc:'7.7만원 × 7 · 야간 분위기', amt:539000 },
+    { name:'프레임형 풀타프 1차 (게이블 · 일체형)', desc:'399.96만원(VAT 포함) × 6동 · 11/1 설치', amt:23997600 },
+    { name:'프레임형 풀타프 추가', desc:'399.96만원(VAT 포함) × 2동 · 구역 확장 후', amt:7999200 },
+    { name:'1.5×6m 모듈형 울타리', desc:'4개 필요 · VAT 포함', amt:2640000 },
   ],
   tiles: { area:'약 900평', thick:'5cm', design:'기본형 확정', qty:'6동 + 2동' },
   fields: { gVendor:'', gQuote:'', gDate:'', tColor:'', tMaterial:'', tDate:'' },
@@ -426,14 +425,14 @@ const tile = (label, bind) => `<label class="block rounded-xl bg-slate-50 p-2.5 
 const fixedTile = (label, val) => `<div class="rounded-xl bg-slate-50 p-2.5"><div class="text-[11px] text-slate-500">${label}</div><div class="font-extrabold text-brand-700">${val}</div></div>`;
 const field = (label, bind, ph) => `<label class="block"><span class="text-[11px] text-slate-500">${label}</span>
   <input data-bind="${bind}" placeholder="${ph}" class="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white"></label>`;
-const costBox = key => `<div class="cost mt-3" data-region="${key}">
+const costBox = (key, vat) => `<div class="cost mt-3" data-region="${key}">
     <table class="w-full text-sm"><tbody class="cost-rows"></tbody></table>
     <div class="flex items-center justify-between pt-2.5 border-t border-slate-200 mt-1">
       <div class="flex items-center gap-2 no-print">
         <button class="text-xs px-2.5 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 font-semibold" data-act="cost-add" data-key="${key}">＋ 항목 추가</button>
         <button class="text-xs px-2.5 py-1 rounded-lg text-slate-400 hover:text-slate-600" data-act="cost-reset" data-key="${key}">↺ 처음 값</button>
       </div>
-      <div class="text-right"><span class="text-[11px] text-slate-400 mr-1.5">합계</span><b class="cost-total text-brand-700 text-base"></b></div>
+      <div class="text-right"><span class="text-[11px] text-slate-400 mr-1.5">합계${vat ? ' (VAT 포함)' : ''}</span><b class="cost-total text-brand-700 text-base"></b></div>
     </div>
   </div>`;
 
@@ -455,12 +454,12 @@ function renderBuildCards() {
     <p class="mt-3 text-[12px] text-slate-500">견적 때 확인: 운반비·부가세 포함 여부 · 파쇄석 규격 · 25t 트럭 진입 가능 여부 · 하자 보수</p>`;
   document.getElementById('tarp').innerHTML = `
     <div class="flex items-start justify-between gap-2">
-      <h2 class="font-bold text-lg flex items-center gap-2">⛺ 풀타프 · 외부 시설 <span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span></h2>
+      <h2 class="font-bold text-lg flex items-center gap-2">⛺ 풀타프 · 외부 시설 <span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span> <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">VAT 포함</span></h2>
       <span class="text-xs px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-semibold">컬러 미정</span>
     </div>
     <div class="no-print mt-3 flex flex-wrap gap-2">${mediaBtn('drawing')}${mediaBtn('khaki')}</div>
     <div class="mt-3 grid grid-cols-3 gap-2 text-center">${tile('설계', 'tiles|design')}${tile('수량', 'tiles|qty')}${fixedTile('설치 목표', '11/1')}</div>
-    ${costBox('cost:tarp')}
+    ${costBox('cost:tarp', true)}
     <div class="mt-4 grid sm:grid-cols-3 gap-2">${field('스킨 컬러', 'fields|tColor', '미정')}${field('세부 재질', 'fields|tMaterial', '미정')}${field('설치일', 'fields|tDate', '11/1 목표')}</div>
     <p class="mt-3 text-[12px] text-slate-500">10/21 시호이엔씨 현장 검토 때 확인: 설치·운송·고정 포함 여부 · 방염 확인서 · 파쇄석 완료 후 설치</p>`;
   renderInputs('tiles'); renderInputs('fields');
