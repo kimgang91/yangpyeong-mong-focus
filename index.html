@@ -192,6 +192,7 @@
           <button id="lb-close" class="h-8 w-8 rounded-lg hover:bg-slate-100 text-slate-500 text-lg" aria-label="닫기">✕</button>
         </div>
       </div>
+      <div id="lb-pages" class="hidden px-4 py-2 border-b border-slate-200 flex flex-wrap gap-2"></div>
       <div class="bg-slate-50 flex items-center justify-center"><img id="lb-img" alt="" class="max-h-[78vh] w-auto max-w-full object-contain"></div>
     </div>
   </div>
@@ -291,7 +292,10 @@ let S = clone(DEFAULTS);
 /* ───────── 고정 데이터 (편집 안 함) ───────── */
 const MEDIA = {
   drawing: { src:'assets/tarp-drawing-4.5x6.png', title:'📐 풀타프 도면 — 4.5 × 6m (시호이엔씨)', cap:'평면 6,000 × 4,500 · 높이 3,400 (벽 2,000 + 지붕 1,400) · 각관 프레임 1동 기준' },
-  layout:  { src:'assets/site-layout-2026-10-13.jpg', title:'🗺 풀타프 · 외부 시설 배치(안)', cap:'실측 배치 2026-10-13 · 구역별 풀타프존 6×4.5m · 9·10구역은 용도 변경 후 정식 운영 예정' },
+  layout:  { title:'🗺 풀타프 · 외부 시설 배치(안)', pages:[
+    { label:'① 위성 실측 배치', src:'assets/site-layout-1-satellite.jpg', cap:'위성사진 위 실측 배치 · 1~8구역 · 구역별 풀타프존 6×4.5m' },
+    { label:'② 3D 조감도', src:'assets/site-layout-2-3d.jpg', cap:'같은 배치를 3D로 본 모습 · 구역마다 풀타프 1동' },
+  ] },
   khaki:   { src:'assets/tarp-color-khaki.jpg', title:'🎨 스킨 컬러 예시 — 카키', cap:'카키 컬러 참고 이미지' },
 };
 const ATTACH = { tarp: ['drawing', 'khaki'] };   // 의논 사항 카드 id → 첨부
@@ -829,13 +833,26 @@ async function start() {
 }
 /* 이미지 보기 */
 const lb = document.getElementById('lightbox');
+// 여러 장이면 위에 ①·② 버튼을 두고 한 장씩 넘겨 본다
+function showMediaPage(m, i) {
+  const p = m.pages ? m.pages[i] : m;
+  document.getElementById('lb-img').src = p.src;
+  document.getElementById('lb-img').alt = m.title;
+  document.getElementById('lb-cap').textContent = p.cap;
+  document.getElementById('lb-open').href = p.src;
+  document.querySelectorAll('#lb-pages [data-page]').forEach(b => {
+    const on = +b.dataset.page === i;
+    b.className = 'text-xs font-semibold px-3 py-1.5 rounded-lg border ' + (on ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50');
+  });
+}
 function openMedia(id) {
   const m = MEDIA[id]; if (!m) return;
-  document.getElementById('lb-img').src = m.src;
-  document.getElementById('lb-img').alt = m.title;
+  const tabs = document.getElementById('lb-pages');
+  tabs.innerHTML = m.pages ? m.pages.map((p, i) => `<button type="button" data-page="${i}">${esc(p.label)}</button>`).join('') : '';
+  tabs.classList.toggle('hidden', !m.pages);
+  tabs.onclick = e => { const b = e.target.closest('[data-page]'); if (b) showMediaPage(m, +b.dataset.page); };
   document.getElementById('lb-title').textContent = m.title;
-  document.getElementById('lb-cap').textContent = m.cap;
-  document.getElementById('lb-open').href = m.src;
+  showMediaPage(m, 0);
   lb.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 }
