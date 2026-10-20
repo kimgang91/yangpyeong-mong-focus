@@ -291,12 +291,15 @@ let S = clone(DEFAULTS);
 /* ───────── 고정 데이터 (편집 안 함) ───────── */
 const MEDIA = {
   drawing: { src:'assets/tarp-drawing-4.5x6.png', title:'📐 풀타프 도면 — 4.5 × 6m (시호이엔씨)', cap:'평면 6,000 × 4,500 · 높이 3,400 (벽 2,000 + 지붕 1,400) · 각관 프레임 1동 기준' },
+  layout:  { src:'assets/site-layout-2026-10-13.jpg', title:'🗺 풀타프 · 외부 시설 배치(안)', cap:'실측 배치 2026-10-13 · 구역별 풀타프존 6×4.5m · 9·10구역은 용도 변경 후 정식 운영 예정' },
   khaki:   { src:'assets/tarp-color-khaki.jpg', title:'🎨 스킨 컬러 예시 — 카키', cap:'카키 컬러 참고 이미지' },
 };
 const ATTACH = { tarp: ['drawing', 'khaki'] };   // 의논 사항 카드 id → 첨부
 const REFS = { fee: [{ tab:'build', label:'🏗 공사 일정 · 투자 내역 보기', sub:'피코 · 캠핏 투자' }] };   // 의논 사항 카드 id → 참고 링크 (tab = 이 페이지의 탭)
 const refBtn = r => `<a href="${r.tab ? '#' + r.tab : esc(r.url)}" ${r.tab ? `data-goto-tab="${r.tab}"` : 'target="_blank" rel="noopener noreferrer"'} class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-brand-50 text-brand-900 border border-brand-100 hover:bg-brand-100">${esc(r.label)} <span class="font-normal opacity-75">${esc(r.sub)}</span> ${r.tab ? '→' : '↗'}</a>`;
-const mediaBtn = id => id === 'drawing'
+const mediaBtn = id => id === 'layout'
+  ? `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100" data-media="layout">🗺 배치(안) 보기 <span class="font-normal text-amber-600">10/13 실측</span></button>`
+  : id === 'drawing'
   ? `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 hover:bg-sky-100" data-media="drawing">📐 도면 보기 <span class="font-normal text-sky-600">4.5×6m</span></button>`
   : `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-[#eef0e6] text-[#4b5320] border border-[#c9cdb4] hover:bg-[#e3e6d6]" data-media="khaki"><span class="h-3 w-3 rounded-full bg-[#5b6146] ring-1 ring-black/10"></span>컬러 예시 <span class="font-normal opacity-75">카키</span></button>`;
 
@@ -471,7 +474,7 @@ function renderBuildCards() {
       <h2 class="font-bold text-lg flex items-center gap-2">${T('tarp:title', '⛺ 풀타프 · 외부 시설')} <span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span> <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">${T('tarp:vat', 'VAT 포함')}</span></h2>
       <span class="text-xs px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-semibold">${T('tarp:status', '컬러 미정')}</span>
     </div>
-    <div class="no-print mt-3 flex flex-wrap gap-2">${mediaBtn('drawing')}${mediaBtn('khaki')}</div>
+    <div class="no-print mt-3 flex flex-wrap gap-2">${mediaBtn('layout')}${mediaBtn('drawing')}${mediaBtn('khaki')}</div>
     <div class="mt-3 grid grid-cols-3 gap-2 text-center">${tile('설계', 'tiles|design')}${tile('수량', 'tiles|qty')}${fixedTile('tarp:goal', '설치 목표', '11/1')}</div>
     ${costBox('cost:tarp', true)}
     <div class="mt-4 grid sm:grid-cols-3 gap-2">${field('스킨 컬러', 'fields|tColor', '미정')}${field('세부 재질', 'fields|tMaterial', '미정')}${field('설치일', 'fields|tDate', '11/1 목표')}</div>
