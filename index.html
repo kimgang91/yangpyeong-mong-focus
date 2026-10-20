@@ -300,21 +300,21 @@ const mediaBtn = id => id === 'drawing'
   : `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-[#eef0e6] text-[#4b5320] border border-[#c9cdb4] hover:bg-[#e3e6d6]" data-media="khaki"><span class="h-3 w-3 rounded-full bg-[#5b6146] ring-1 ring-black/10"></span>컬러 예시 <span class="font-normal opacity-75">카키</span></button>`;
 
 const TRACKS = [
-  { icon:'🪨', title:'파쇄석', owner:'지환', inv:'pico', steps:[
+  { icon:'🪨', title:'파쇄석', inv:'pico', steps:[
     { date:'10/19', text:'여주 인근 업체 섭외 · 단가/일정/추가비용 확인' },
     { date:'10/21', text:'현장 견적 미팅 (수요일 방문 때)' },
     { date:'미정',  text:'업체 확정 · 계약' },
     { date:'미정',  text:'공사 착수 (정지 → 파쇄석 → 석분 · 다짐)' },
     { date:'10/30', text:'공사 완료', goal:true },
   ] },
-  { icon:'⛺', title:'풀타프', owner:'시호이엔씨', inv:'camp', steps:[
+  { icon:'⛺', title:'풀타프', inv:'camp', steps:[
     { date:'완료',  text:'기본형 설계 확정', done:true },
     { date:'10/20', text:'최종 스펙 · 스킨 컬러 확정 (포커스 미팅)' },
     { date:'10/21', text:'현장 검토 — 시호이엔씨 양평 몽 캠핑장 방문' },
     { date:'11/1',  text:'1차 풀타프 6동 설치 (파쇄석 완료 후)', goal:true },
     { date:'미정',  text:'구역 확장 후 풀타프 2동 추가 설치' },
   ] },
-  { icon:'🛋', title:'내부 장비', owner:'김경수', inv:'camp', steps:[
+  { icon:'🛋', title:'내부 장비', inv:'camp', steps:[
     { date:'10/20', text:'구매 리스트 공유 (포커스 미팅)' },
     { date:'미정',  text:'1세트 우선 주문' },
     { date:'미정',  text:'현장 검증 → 품목 최종 확정' },
@@ -406,7 +406,6 @@ function renderTracks() {
     <div class="rounded-2xl bg-slate-50 border border-slate-200 border-t-4 ${tr.inv === 'pico' ? 'border-t-sky-400' : 'border-t-violet-400'} p-4">
       <div class="flex items-center justify-between mb-3">
         <h3 class="font-bold flex items-center gap-1.5">${tr.icon} ${tr.title} ${tr.inv === 'pico' ? '<span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span>' : '<span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span>'}</h3>
-        <span class="text-[11px] px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-600">${esc(tr.owner)}</span>
       </div>
       <ol class="relative ml-1.5 border-l-2 border-slate-200 space-y-3">
         ${tr.steps.map(s => {
