@@ -110,8 +110,7 @@
           <div class="text-right"><div class="text-[11px] text-sky-700">합계</div><div id="inv-pico" class="text-xl font-extrabold text-sky-900"></div></div>
         </div>
         <div class="mt-2 text-sm text-sky-900/80 space-y-0.5">
-          <div>🔑 보증금 <b id="inv-pico-deposit" class="float-right"></b></div>
-          <div>🤝 권리금 <b id="inv-pico-premium" class="float-right"></b></div>
+          <div>🔑 보증금 · 권리금 <b id="inv-pico-lease" class="float-right"></b></div>
           <div>🪨 파쇄석 공사 <b id="inv-pico-gravel" class="float-right"></b></div>
         </div>
       </div>
@@ -126,6 +125,8 @@
         </div>
       </div>
     </section>
+
+    <section id="lease" class="rounded-3xl bg-white border border-slate-200 border-t-4 border-t-sky-400 shadow-sm p-5 sm:p-6 mb-6"></section>
 
     <div class="grid lg:grid-cols-2 gap-4 mb-6">
       <section id="gravel" class="rounded-3xl bg-white border border-slate-200 border-t-4 border-t-sky-400 shadow-sm p-5 sm:p-6"></section>
@@ -203,14 +204,14 @@ const won = n => n >= 10000 ? (n / 10000).toLocaleString('ko-KR', { maximumFract
 /* ───────── 기본값 — 저장된 값이 없을 때만 쓰임 ───────── */
 // id 는 저장 키(disc:<id>)라 바꾸면 저장된 내용과 연결이 끊김 — 순서는 배열 순서로 정함
 const DISC_DEFAULTS = [
+  { id:'cost', icon:'💳', title:'캠핏 비용처리 어떻게?',
+    points:['공사·풀타프·장비 비용을 누가 부담할지', '발주·결제 명의와 세금계산서 처리', '지출 승인 기준 · 증빙 관리 방법'] },
   { id:'tarp', icon:'⛺', title:'풀타프 최종 스펙 및 컬러',
     points:['기본형 설계는 확정 — 세부 스펙(4.5x6m) 최종 확인', '스킨 컬러(카키) 결정 — 전달 전까지 시호이엔씨 진행 불가', '1차 6동 설치 → 구역 확장 후 2동 추가 설치 (총 8동)', '11/1 1차 설치 일정 시호이엔씨와 확정'] },
   { id:'gear', icon:'🛋', title:'최종 세팅 장비',
     points:['김경수 정리 구매 리스트 검토', '구역마다 상시 비치할 품목 확정', '대여용으로 둘 품목 구분'] },
   { id:'set1', icon:'📦', title:'장비 1세트 구매 · 검증 후 추가 발주',
     points:['1세트 품목 확정 · 주문 시점', '현장 검증 기준 (누가, 무엇을 볼지)', '추가 발주 수량(6세트) · 11/1 타프 설치에 맞춘 시점'] },
-  { id:'cost', icon:'💳', title:'캠핏 비용처리 어떻게?',
-    points:['공사·풀타프·장비 비용을 누가 부담할지', '발주·결제 명의와 세금계산서 처리', '지출 승인 기준 · 증빙 관리 방법'] },
   { id:'airtent', icon:'🏕', title:'캠핏 보유 오투라이프 에어텐트 활용',
     points:['활용 방식 — 구역 비치 / 대여 상품 / 단체·체험용 등'] },
   { id:'fee', icon:'🧾', title:'적용 플랜 수수료',
@@ -230,6 +231,10 @@ const DEFAULTS = {
     { date:'10/30 (금)', text:'파쇄석 공사 완료', sub:'', iso:'2026-10-30', key:true },
     { date:'11/1 (일)',  text:'풀타프 1차 6동 설치', sub:'구역 확장 후 2동 추가', iso:'2026-11-01', key:true },
     { date:'11/2 (월)',  text:'단체 예약 전환', sub:'', iso:'2026-11-02', key:true, goal:true },
+  ],
+  'cost:lease': [
+    { name:'보증금', desc:'', amt:30000000 },
+    { name:'권리금', desc:'', amt:10000000 },
   ],
   'cost:gravel': [
     { name:'파쇄석(쇄석) 포설', desc:'25t 1대 70만원 × 10대', amt:7000000 },
@@ -426,6 +431,9 @@ const costBox = key => `<div class="cost mt-3" data-region="${key}">
   </div>`;
 
 function renderBuildCards() {
+  document.getElementById('lease').innerHTML = `
+    <h2 class="font-bold text-lg flex items-center gap-2">🔑 보증금 · 권리금 <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
+    ${costBox('cost:lease')}`;
   document.getElementById('gravel').innerHTML = `
     <div class="flex items-start justify-between gap-2">
       <h2 class="font-bold text-lg flex items-center gap-2">🪨 파쇄석 공사 <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
@@ -446,7 +454,7 @@ function renderBuildCards() {
     <div class="mt-4 grid sm:grid-cols-3 gap-2">${field('스킨 컬러', 'fields|tColor', '미정')}${field('세부 재질', 'fields|tMaterial', '미정')}${field('설치일', 'fields|tDate', '11/1 목표')}</div>
     <p class="mt-3 text-[12px] text-slate-500">10/21 시호이엔씨 현장 검토 때 확인: 설치·운송·고정 포함 여부 · 방염 확인서 · 파쇄석 완료 후 설치</p>`;
   renderInputs('tiles'); renderInputs('fields');
-  renderCost('cost:gravel'); renderCost('cost:tarp');
+  renderCost('cost:lease'); renderCost('cost:gravel'); renderCost('cost:tarp');
 }
 
 function renderInputs(key) {
@@ -481,12 +489,11 @@ function updateCostTotal(key) {
   updateInvest();
 }
 // 투자 구분 — 보증금·권리금·파쇄석 = 피코, 풀타프·외부 시설 + 내부 장비 = 캠핏
-const PICO_DEPOSIT = 30000000, PICO_PREMIUM = 10000000;
 function updateInvest() {
   if (!S.gearList) return;
-  const g = costSum('cost:gravel'), tp = costSum('cost:tarp'), ge = activeGear().reduce((s, r) => s + rowAmt(r), 0);
+  const ls = costSum('cost:lease'), g = costSum('cost:gravel'), tp = costSum('cost:tarp'), ge = activeGear().reduce((s, r) => s + rowAmt(r), 0);
   const put = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = won(v); };
-  put('inv-pico', PICO_DEPOSIT + PICO_PREMIUM + g); put('inv-pico-deposit', PICO_DEPOSIT); put('inv-pico-premium', PICO_PREMIUM); put('inv-pico-gravel', g);
+  put('inv-pico', ls + g); put('inv-pico-lease', ls); put('inv-pico-gravel', g);
   put('inv-camp', tp + ge); put('inv-camp-tarp', tp); put('inv-camp-gear', ge);
 }
 
