@@ -294,8 +294,8 @@ const MEDIA = {
   khaki:   { src:'assets/tarp-color-khaki.jpg', title:'🎨 스킨 컬러 예시 — 카키', cap:'카키 컬러 참고 이미지' },
 };
 const ATTACH = { tarp: ['drawing', 'khaki'] };   // 의논 사항 카드 id → 첨부
-const REFS = { fee: [{ url:'https://kimgang91.github.io/crewcamp-yangpyeong/#11', label:'📊 참고자료 — A안(프렌들리) · B안(전수창업) 1년 매출 · 수수료 비교', sub:'16.5% vs 20%' }] };   // 의논 사항 카드 id → 참고 링크
-const refBtn = r => `<a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-brand-50 text-brand-900 border border-brand-100 hover:bg-brand-100">${esc(r.label)} <span class="font-normal opacity-75">${esc(r.sub)}</span> ↗</a>`;
+const REFS = { fee: [{ tab:'build', label:'🏗 공사 일정 · 투자 내역 보기', sub:'피코 · 캠핏 투자' }] };   // 의논 사항 카드 id → 참고 링크 (tab = 이 페이지의 탭)
+const refBtn = r => `<a href="${r.tab ? '#' + r.tab : esc(r.url)}" ${r.tab ? `data-goto-tab="${r.tab}"` : 'target="_blank" rel="noopener noreferrer"'} class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-brand-50 text-brand-900 border border-brand-100 hover:bg-brand-100">${esc(r.label)} <span class="font-normal opacity-75">${esc(r.sub)}</span> ${r.tab ? '→' : '↗'}</a>`;
 const mediaBtn = id => id === 'drawing'
   ? `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 hover:bg-sky-100" data-media="drawing">📐 도면 보기 <span class="font-normal text-sky-600">4.5×6m</span></button>`
   : `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-[#eef0e6] text-[#4b5320] border border-[#c9cdb4] hover:bg-[#e3e6d6]" data-media="khaki"><span class="h-3 w-3 rounded-full bg-[#5b6146] ring-1 ring-black/10"></span>컬러 예시 <span class="font-normal opacity-75">카키</span></button>`;
@@ -734,6 +734,10 @@ function setTab(tab) {
   history.replaceState(null, '', '#' + tab);
 }
 document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-goto-tab]'); if (!a) return;
+  e.preventDefault(); setTab(a.dataset.gotoTab); window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
 /* ───────── 공유 저장 (Supabase) ───────── */
 const CFG = window.FOCUS_CONFIG || {};
