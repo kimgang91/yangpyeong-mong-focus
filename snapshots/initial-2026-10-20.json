@@ -1,0 +1,430 @@
+{
+ "label": "최초안",
+ "savedAt": "2026-10-20",
+ "state": {
+  "cost:lease": [
+   {
+    "name": "보증금",
+    "desc": "",
+    "amt": 30000000
+   },
+   {
+    "name": "권리금",
+    "desc": "",
+    "amt": 10000000
+   }
+  ],
+  "cost:insure": [
+   {
+    "amt": 500000,
+    "desc": "",
+    "name": "화재 · 책임보험"
+   },
+   {
+    "amt": 1500000,
+    "desc": "",
+    "name": "오픈 전 방역"
+   },
+   {
+    "amt": 10000000,
+    "desc": "1년 운영 및. 보증비용",
+    "name": "연 차량 운영비(렌트)"
+   }
+  ],
+  "cost:gravel": [
+   {
+    "amt": 7000000,
+    "desc": "15t 1대 70만원 × 10대",
+    "name": "파쇄석(쇄석)"
+   },
+   {
+    "amt": 3000000,
+    "desc": "1일 100만원 × 3일",
+    "name": "포크레인 (현장 방문 견적 예정)"
+   },
+   {
+    "amt": 600000,
+    "desc": "1일 20만원 x 3일",
+    "name": "공사/감리 "
+   },
+   {
+    "amt": 1500000,
+    "desc": "",
+    "name": "포설 / 석분 "
+   },
+   {
+    "amt": 1000000,
+    "desc": "앙카 및 라인 작업 (자재 + 인건비)",
+    "name": "주차(사이트) 라인 드로잉 마킹"
+   },
+   {
+    "amt": 1500000,
+    "desc": "구역 및 사이트 구분 (컨셉에 따라)",
+    "name": "사이트 표기 간판 "
+   },
+   {
+    "amt": 5000000,
+    "desc": "자재 + 인건비",
+    "name": "싸인간판(내/외부)"
+   },
+   {
+    "amt": 3000000,
+    "desc": "",
+    "name": "오더앤픽 사입 비용"
+   }
+  ],
+  "cost:tarp": [
+   {
+    "amt": 23997600,
+    "desc": "399.96만원(VAT 포함) × 6동 · 11/1 설치",
+    "name": "프레임형 풀타프 1차 6동"
+   },
+   {
+    "amt": 7999200,
+    "desc": "399.96만원(VAT 포함) × 2동 · 구역 확장 후",
+    "name": "프레임형 풀타프 2차 2동 추가 (7/8구역 확장 후)"
+   },
+   {
+    "amt": 2640000,
+    "desc": "4개 필요 · VAT 포함",
+    "name": "1.5×6m 모듈형 울타리"
+   },
+   {
+    "amt": 5000000,
+    "desc": "https://www.11st.co.kr/products/9478017252?NaPm=ct%3Dmvg7ljq8%7Cci%3D23c70889c6ed6e01ab9ebe81affdbecfcbcc513f%7Ctr%3Dslsl%7Csn%3D17703%7Chk%3D1ca6e25886bf8cb17d6241fdb119325772447edd&utm_term=&utm_campaign=%B3%D7%C0%CC%B9%F6pc_%B0%A1%B0%DD%BA%F1%B1%B3%B1%E2%BA%BB&utm_source=%B3%D7%C0%CC%B9%F6_PC_PCS&utm_medium=%B0%A1%B0%DD%BA%F1%B1%B3",
+    "name": "에어바운스"
+   }
+  ],
+  "gearList": [
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/9141021448?itemId=26908079001&vendorItemId=93877481477&q=%EC%8A%A4%ED%83%A0%EB%93%9C%ED%98%95+%EB%83%89%EB%82%9C%EB%B0%A9%EA%B8%B0&searchId=a0dc5a4a11014574&sourceType=search&rank=15&itemsCount=60&searchRank=15&traceId=mvf07hhy",
+    "kind": "f",
+    "name": "LG 스탠드 냉난방기 인버터 18평형 ",
+    "note": "실외기 / 배송비 포함 ",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/5c4c/cc838c49360e2e2e7785826b57ea9f20b289138b69818dbf620c0258d27d.jpg",
+    "price": 1690006,
+    "picked": false
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/7284800109?itemId=18606212798&vendorItemId=85742112984&sourceType=srp_product_ads&clickEventId=93c051a0-cb9b-11f1-89bb-9b2aa5e83195&clickEventId=93c051a0-cb9b-11f1-89bb-9b2aa5e83195&korePlacement=15&korePlacement=15&koreSubPlacement=1&koreSubPlacement=1&q=207%EB%83%89%EC%9E%A5%EA%B3%A0&searchId=dbcdb3812547827&searchRank=0&traceId=mvf0z6ie",
+    "kind": "f",
+    "name": "207L 냉장고 (바베큐 식자재)",
+    "note": "바베큐 패키지",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/retail/images/322038456000815-d6eba21e-78c4-443c-a108-0fde85d48ad5.jpg",
+    "price": 271660,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/9470721263?itemId=28188706834&vendorItemId=95143145594&pickType=COU_PICK&q=%EC%86%8C%ED%99%94%EA%B8%B0+3.3kg&searchId=6b95ed2b5388765&sourceType=search&rank=0&itemsCount=60&searchRank=0&traceId=mvf0uvb3",
+    "kind": "f",
+    "name": "ABC 분말 소화기 3.3kg",
+    "note": "화기 구역 필수",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/retail/images/272588130308517-3c1c77b0-621b-440b-ba85-d07b2a80a733.jpg",
+    "price": 17900,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 40,
+    "url": "https://www.coupang.com/vp/products/8522015947?itemId=24631364470&vendorItemId=93812256174&q=%EB%A1%9C%ED%8B%B0%EC%BA%A0%ED%94%84+%EB%A1%9C%EC%9A%B0%EC%B2%B4%EC%96%B4&searchId=6d75b5cf2672077&sourceType=search&rank=41&itemsCount=59&searchRank=41&traceId=mvf12ro9",
+    "kind": "f",
+    "name": "로티캠프 로우체어 2개",
+    "note": "기본 8개 세팅 (16개 대여용)",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/retail/images/2025/10/14/14/0/cba015c8-0d55-4863-933d-18637aa82096.jpg",
+    "price": 42900,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 16,
+    "url": "https://www.coupang.com/vp/products/7554279080?itemId=25424970393&vendorItemId=92418074764&q=%EC%BA%A0%ED%95%91%ED%85%8C%EC%9D%B4%EB%B8%94+%EC%B9%B4%ED%82%A4&searchId=e1901d2f2723744&sourceType=search&rank=7&itemsCount=60&searchRank=7&traceId=mvf15i5k",
+    "kind": "f",
+    "name": "카르닉 접이식 캠핑 2단 롤테이블",
+    "note": "4인용 1구역당 2개씩",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/9571/b9e60ff5c4e73ee580cb6b86907417aeaac1ac7f6c41b8534a50d8f1d2fb.jpg",
+    "price": 69000,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://brand.naver.com/biloc/products/13640070190?NaPm=ct%3Dmvg4qiov%7Cci%3Daffiliate%7Ctr%3Daff%7Ctrx%3D1001384752647616%7Chk%3D951df42cc9943bc9b18f9ad8ff6ae3d4d37d0863&originChannelInfo=ac%3DNBLOG%7Cctid%3Dnull%7Ccid%3Dnull",
+    "kind": "f",
+    "name": "메세타 화목난로",
+    "note": "화목난로",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/e157/3be47d454ce4b7ef818b3a6a99cd26c21b2b101487da895017fe2d248539.jpg",
+    "price": 251000,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/8409043234?itemId=24312310262&vendorItemId=91612451676&q=%EC%9D%BC%EC%82%B0%ED%99%94%ED%83%84%EC%86%8C+%EA%B2%BD%EB%B3%B4%EA%B8%B0&searchId=f327b2ba4597571&sourceType=search&rank=2&itemsCount=60&searchRank=2&traceId=mvf0vvwi",
+    "kind": "f",
+    "name": "일산화탄소(CO) 경보기",
+    "note": "안전 · 단가 추정",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/9a76/caf9c85ce2bcf0fe76b338879850ac8ba70ab12b423802522b969514bc6b.jpg",
+    "price": 6800,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://smartstore.naver.com/camploungestore/products/13748028573?nl-ts-pid=jWkDowqVJ5RssQ0EfT0-511549&NaPm=ct%3Dmvg5es2r%7Cci%3DrBnA5gAAAaFXcQb6Ajr0ug%2E%2E02%7Ctr%3Dpmax%7Chk%3D58c31d5e9dde4c20141b20fe165fd5105b12926f%7Cnacn%3D8UUeDYi3seeDD",
+    "kind": "f",
+    "name": "캠핑 빌록 화로대 ",
+    "note": "제작구매",
+    "image": "https://shop-phinf.pstatic.net/20260905_262/178860330157695zLs_PNG/122736250170536204_1561220039.png?type=o1000_webp",
+    "price": 200000,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/7400589449?itemId=19154269048&vendorItemId=86273138102&sourceType=srp_product_ads&clickEventId=65407ad0-cb9b-11f1-b5f0-f6bf83532433&clickEventId=65407ad0-cb9b-11f1-b5f0-f6bf83532433&korePlacement=15&korePlacement=15&koreSubPlacement=9&koreSubPlacement=9&q=%EC%B9%B4%EA%B3%A0%EB%B0%95%EC%8A%A4&searchId=78df7fb610443409&searchRank=6&traceId=mvf0x0qj",
+    "kind": "f",
+    "name": "매드독캠프 카고박스 (50L)",
+    "note": "수납",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/7840/1238e4d4dee3aa2b20c555a3fa1b272f5ce337fce9f2317696ba5216d999.jpg",
+    "price": 42000,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://brand.naver.com/biloc/products/13640070190?nl-query=%EB%B9%8C%EB%A1%9D+%EC%8A%A4%ED%85%94%EB%9D%BC+IGT+%EC%89%98%ED%94%84+%EC%BA%A0%ED%95%91+%EC%88%98%EB%82%A9+%EC%84%A0%EB%B0%98&nl-ts-pid=jWkC0sqVJ5RssQ0EZcZ-275674&NaPm=ct%3Dmvg5b9jc%7Cci%3Df1494e339a041cd1fd362b8152668c9ca6d9dd59%7Ctr%3Dsls%7Csn%3D2631028%7Chk%3D3ea68fb3cb05f402d4351d2bc303a97092b9dc25",
+    "kind": "f",
+    "name": "빌록 스텔라 IGT 쉘프 캠핑 수납 선반",
+    "note": "선반",
+    "image": "https://shop-phinf.pstatic.net/20260622_63/1782104992360v23aV_PNG/36551405181405739_2033017259.png?type=o1000_webp",
+    "price": 150000,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://brand.naver.com/kovea/products/13627129807?nl-query=igt+%EB%B2%84%EB%84%88&nl-ts-pid=jWkmowqXKZ3KLZKOWBd-143378&NaPm=ct%3Dmvg4sqvc%7Cci%3Df2969e6c6316f99ba94fcb15ef1f53db97822f87%7Ctr%3Dslssp%7Csn%3D761448%7Chk%3Df68ce151cb9fda3b542f457d5beacde41a6a508e",
+    "kind": "f",
+    "name": "코베아 플레이트 버너 세트 스테인리스 메쉬 바스켓 IGT 테이블 KGB-2605EMA",
+    "note": "",
+    "image": "https://shop-phinf.pstatic.net/20260609_72/1780974777347f2TwY_JPEG/8981425368850718_1448455780.jpg?type=o1000_webp",
+    "price": 120000,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/8505779367?itemId=24619106628&vendorItemId=91630241678&sourceType=srp_product_ads&clickEventId=77548d90-cb9d-11f1-b904-56cb417cb992&clickEventId=77548d90-cb9d-11f1-b904-56cb417cb992&korePlacement=15&korePlacement=15&koreSubPlacement=1&koreSubPlacement=1&q=%EC%8D%AC%ED%86%A0%EC%B9%98+%EC%8A%A4%ED%86%A0%EB%B8%8C&searchId=0abf37907346961&searchRank=5&traceId=mvf1h0ot",
+    "kind": "f",
+    "name": "썬토치 스토브",
+    "note": "1개 구역당 다 2개씩 비치",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/720a/23ad27499be3273dc6e822079e2f3ad71311fbdae34736fba45cf26f3a8b.png",
+    "price": 44300,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/9052445522?itemId=26569956227&vendorItemId=93543519826&sourceType=srp_product_ads&clickEventId=19cfe690-cb9f-11f1-ad9f-00f19a3cd5de&clickEventId=19cfe690-cb9f-11f1-ad9f-00f19a3cd5de&korePlacement=15&korePlacement=15&koreSubPlacement=5&koreSubPlacement=5&q=%EC%BD%94%ED%8C%85+%EA%B7%B8%EB%A6%AC%EB%93%A4&searchId=23071ff16696584&searchRank=1&traceId=mvf1vyy4",
+    "kind": "f",
+    "name": "포레스트큐브 HOME 그리들 IH 38cm 대형",
+    "note": "",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/952d/d36392551c327a4bf7acf2b4def54b55f6a49f3f2f513708746534d3cf48.jpg",
+    "price": 33400,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 1,
+    "url": "https://www.coupang.com/vp/products/8118221139?itemId=23018795728&vendorItemId=90052587706&pickType=COU_PICK&q=%EC%BA%A0%ED%95%91+%EC%BD%94%ED%8E%A0&searchId=982ddfa719839049&sourceType=search&rank=3&itemsCount=60&searchRank=3&traceId=mvf1z2ar",
+    "kind": "f",
+    "name": "브리즈문 연마제 세척 3중 스텐 캠핑 코펠 냄비 15p",
+    "note": "",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/1025_amir_coupang_oct_80k/aef2/74d60cd2a5d8699adbf3324f5fe5b31fd3316d85883cad1d50b5768a69bd.jpg",
+    "price": 44300,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/8716397650?itemId=25391268038&vendorItemId=92384984936&pickType=COU_PICK&q=%EB%A6%B4%EC%84%A0&searchId=04279ab09125393&sourceType=search&rank=2&itemsCount=60&searchRank=2&traceId=mvf0r75y",
+    "kind": "f",
+    "name": "캠핑 릴선",
+    "note": "",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/image_audit/stage/manual/7146632b-7d58-4d19-ba3c-cd54f59edb17_fixing_v2_gemini_image_fixing_1784096068709.png",
+    "price": 41070,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/8623825753?itemId=25020378165&vendorItemId=94991686818&q=%EC%BA%A0%ED%95%91+%EC%A1%B0%EB%AA%85+%EC%8A%A4%ED%94%BC%EC%BB%A4&searchId=66f49f335623372&sourceType=search&rank=14&itemsCount=60&searchRank=14&traceId=mvf2mztz",
+    "kind": "f",
+    "name": "랜턴(스피커 겸용)",
+    "note": "",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/68c7/f08782cb6022004ad50f12f08c60b2655b2b1d59ba85831715addcd1ae27.jpg",
+    "price": 169000,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/9302230151?itemId=27557321620&vendorItemId=94521444841&sourceType=srp_product_ads&clickEventId=5847a6e0-cba1-11f1-b3ce-b79f3f98ad7e&clickEventId=5847a6e0-cba1-11f1-b3ce-b79f3f98ad7e&korePlacement=15&korePlacement=15&koreSubPlacement=22&koreSubPlacement=22&q=%EC%BA%A0%ED%95%91%EC%A1%B0%EB%AA%85&searchId=2672235d3210142&searchRank=21&traceId=mvf2i024",
+    "kind": "f",
+    "name": "매드독캠프 펌킨10 스트링 파티 라이트 10구",
+    "note": "",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/image_audit/stage/manual/61f6a6d7c2b241d8dd78804603e3ebcd3dada5d94cce3b84c4721c334c4b_1778050902132.jpg",
+    "price": 130000,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 4,
+    "url": "https://www.coupang.com/vp/products/9619638258?itemId=28725112452&vendorItemId=95665437126&q=%EC%8B%A0%EC%9D%BC+%ED%8C%AC%ED%9E%88%ED%84%B0&searchId=bc3c028910192228&sourceType=search&rank=2&itemsCount=60&searchRank=2&traceId=mvf1ibd2",
+    "kind": "r",
+    "name": "팬히터 (전기·안전형)",
+    "note": "11~3월 · 신일 SFH-CC910MVP 가격",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/retail/images/2026/06/25/17/0/5298af77-e558-456a-8ea6-40e6302fc74f.jpg",
+    "price": 404910,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/9743072391?itemId=29163809523&vendorItemId=96085799546&q=%ED%8F%AC%EB%A0%88%EB%B0%94%EC%9E%90%EC%B6%A9%EB%A7%A4%ED%8A%B8&searchId=4525ee1a10269420&sourceType=search&rank=3&itemsCount=60&searchRank=3&traceId=mvf1n5jl",
+    "kind": "r",
+    "name": "포레바 자충매트리스 (더블)",
+    "note": "2인용",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/5a4c/797be78e04157520d7f8a797a77b35cbdbb90676be712089d74abdfaa725.jpg",
+    "price": 169000,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/8562922874?itemId=29164829028&vendorItemId=96086734855&q=%EB%B8%94%EB%9E%99%EB%8F%85+%EC%B9%A8%EB%82%AD&searchId=40880e0b10841834&sourceType=search&rank=3&itemsCount=60&searchRank=3&traceId=mvf1pu4k",
+    "kind": "r",
+    "name": "블랙독 침낭",
+    "note": "세탁 순환분 포함",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/892e/819719ac121c28f174769a219b64d1aa112cd19e3e1b24d5a04c731f9acf.jpg",
+    "price": 41900,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/9734718643?itemId=29132418041&vendorItemId=96056382701&q=%EC%BA%A0%ED%95%91+%EC%A0%84%EA%B8%B0%EB%A7%A4%ED%8A%B8&searchId=699e58987980780&sourceType=search&rank=10&itemsCount=60&searchRank=10&traceId=mvf2y8oo",
+    "kind": "r",
+    "name": "전기매트",
+    "note": "",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/7af3/411ee018fa8fe0a4b88a21827ad3a27402959d6e8d033b5464be36c7a084.png",
+    "price": 35900,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/9136260842?itemId=26889093306&vendorItemId=93858600086&q=%EC%95%84%EC%9D%B4%EB%91%90%EC%A0%A0+%EC%95%84%EB%A7%88%EB%8D%B0%EC%9A%B0%EC%8A%A4+MAX+%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4+%EC%A0%84%EC%9A%A9+%EC%9D%B4%EB%84%88%ED%85%90%ED%8A%B8+4%EC%9D%B8%EC%9A%A9+++%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C+%EC%8B%9C%ED%8A%B8&searchId=48dbb31124168024&sourceType=search&rank=0&itemsCount=46&searchRank=0&traceId=mvg80iq3",
+    "kind": "r",
+    "name": "이너텐트(아이두젠 4인용)",
+    "note": "그라운드시트 포함 (3mx2.25m",
+    "image": "https://shop-phinf.pstatic.net/20250319_38/1742351020012UrMAx_JPEG/76483921013694579_993245750.jpg?type=o1000_webp",
+    "price": 179000,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 8,
+    "url": "https://www.coupang.com/vp/products/5417168337?itemId=8169044893&vendorItemId=75457213561&q=%EC%8A%A4%EC%9C%84%EC%8A%A4%EB%A7%88%EC%9A%B4%ED%8B%B4+%ED%97%A5%EC%82%AC%EB%8F%94+%EC%9B%90%ED%84%B0%EC%B9%98%ED%85%90%ED%8A%B8&searchId=67cdf4d27545035&sourceType=search&rank=1&itemsCount=60&searchRank=1&traceId=mvf1s28x",
+    "kind": "r",
+    "name": "스위스마운틴 헥사돔 원터치텐트(2.6mx2.6m)",
+    "note": "이너텐트 대용, 이너는 맞춤제작 필요",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/retail/images/69505259955997-127c346b-5170-4e05-8124-9f3b9f11efe2.jpg",
+    "price": 74420,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 10,
+    "url": "https://www.coupang.com/vp/products/8328432690?itemId=25590475400&vendorItemId=95655129097&q=%EC%85%80%ED%94%84+%EB%A1%9C%EC%8A%A4%ED%8C%85&searchId=f6af962212407007&sourceType=search&rank=45&itemsCount=60&searchRank=45&traceId=mvf23hi0",
+    "kind": "r",
+    "name": "로스팅 도구",
+    "note": "커피 체험",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/fafb/6b7c1a5388246a115bdeae7f88b4604aa6d9f77354906626b76c76eb71c8.jpg",
+    "price": 52130,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 10,
+    "url": "https://www.coupang.com/vp/products/9638587885?itemId=28797683231&vendorItemId=95670615108&sourceType=srp_product_ads&clickEventId=235dc5f0-cba0-11f1-a2b2-55b6cc18291c&clickEventId=235dc5f0-cba0-11f1-a2b2-55b6cc18291c&korePlacement=15&korePlacement=15&koreSubPlacement=1&koreSubPlacement=1&q=%ED%95%B8%EB%93%9C%EB%93%9C%EB%A6%BD%EC%84%B8%ED%8A%B8+%28%EA%B7%B8%EB%9D%BC%EC%9D%B8%EB%8D%94%ED%8F%AC%ED%95%A8%29&searchId=62f12ca39757458&searchRank=0&traceId=mvf24exj",
+    "kind": "r",
+    "name": "핸드드립 세트 (그라인더 포함)",
+    "note": "커피 체험",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/image_audit/prod/6e138e4e-ab65-406b-a314-90ce0fb42b09_fixing_v2.png",
+    "price": 40550,
+    "picked": false,
+    "status": "review"
+   },
+   {
+    "amt": null,
+    "qty": 10,
+    "url": "https://www.coupang.com/vp/products/9730080074?itemId=29117164512&vendorItemId=96041650143&q=%EC%85%80%ED%94%84+%ED%8C%9D%EC%BD%98+%EA%B8%B0%EA%B8%B0&searchId=679f131e3107727&sourceType=search&rank=51&itemsCount=60&searchRank=51&traceId=mvf29egf",
+    "kind": "r",
+    "name": "팝콘 기기",
+    "note": "팝콘 판매",
+    "image": "https://thumbnail.coupangcdn.com/thumbnails/remote/640x640ex/image/vendor_inventory/1b48/e78ba442054cffcac3f42ba1ce7c89d09e8478a530c8307b4cdc8d6b7c4e.jpg",
+    "price": 61370,
+    "picked": false,
+    "status": "review"
+   }
+  ],
+  "texts": {
+   "trk:0:title": "🪨 파쇄석 및 보수공사",
+   "b-sched-hint": "날짜가 정해지지 않은 단계는 미정으로 표시 · 순서는 파쇄석 → 풀타프 → 장비 비치 "
+  },
+  "tiles": {
+   "area": "약 900평",
+   "thick": "5cm",
+   "design": "기본형 확정",
+   "qty": "6동 + 2동"
+  },
+  "fields": {
+   "gVendor": "",
+   "gQuote": "",
+   "gDate": "",
+   "tColor": "",
+   "tMaterial": "",
+   "tDate": ""
+  }
+ }
+}

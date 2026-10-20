@@ -30,6 +30,7 @@
   body.editing [data-edit]:focus { outline:2px solid #14b8a6; background:#fff; }
   [data-edit]:empty::before { content:attr(data-ph); color:#cbd5e1; }
   body:not(.editing) [data-edit]:empty { display:none; }
+  body.snapshot #edit-toggle, body.snapshot .edit-only { display:none !important; }
   .flash { animation: flash 1.2s ease-out; }
   @keyframes flash { from { box-shadow:0 0 0 3px #fcd34d; } to { box-shadow:0 0 0 3px transparent; } }
   @media print { .no-print { display:none !important; } body { background:#fff; } }
@@ -94,6 +95,13 @@
 
   <!-- 공사 일정 · 장비 -->
   <div id="tab-build" class="tab-panel hidden">
+    <div class="no-print flex flex-wrap items-center gap-2 mb-4">
+      <div class="inline-flex rounded-2xl bg-white border border-slate-200 p-1 shadow-sm text-sm">
+        <button data-ver="current" class="ver-btn px-3.5 py-1.5 rounded-xl font-semibold">현재안</button>
+        <button data-ver="initial" class="ver-btn px-3.5 py-1.5 rounded-xl font-semibold">📌 최초안 (10/20)</button>
+      </div>
+      <span id="ver-note" class="hidden text-xs font-semibold px-3 py-1.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">📌 10/20에 저장한 최초안 · 읽기 전용 — 고치려면 '현재안'으로 돌아가세요</span>
+    </div>
     <section class="rounded-3xl bg-white border border-slate-200 shadow-sm p-5 sm:p-6 mb-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
         <h2 class="font-bold text-lg"><span data-t="b-sched">공사 일정</span></h2>
@@ -446,14 +454,17 @@ const tile = (label, bind) => `<div class="block rounded-xl bg-slate-50 p-2.5 cu
 const fixedTile = (id, label, val) => `<div class="rounded-xl bg-slate-50 p-2.5"><div class="text-[11px] text-slate-500">${T(id + ':label', label)}</div><div class="font-extrabold text-brand-700">${T(id + ':val', val)}</div></div>`;
 const field = (label, bind, ph) => `<div class="block"><span class="text-[11px] text-slate-500">${T('field:' + bind.replace('|', ':'), label)}</span>
   <input data-bind="${bind}" placeholder="${ph}" class="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white"></div>`;
+// 상태(확정 · 검토 · 반려)를 고르는 비용 카드 — 반려는 합계에서 빠짐
+const COST_STATUS = ['cost:tarp'];
 const costBox = (key, vat) => `<div class="cost mt-3" data-region="${key}">
     <table class="w-full text-sm"><tbody class="cost-rows"></tbody></table>
+    ${COST_STATUS.includes(key) ? '<div class="cost-st mt-2 flex flex-wrap items-center gap-1.5 text-[11px]"></div>' : ''}
     <div class="flex items-center justify-between pt-2.5 border-t border-slate-200 mt-1">
       <div class="flex items-center gap-2 no-print">
         <button class="text-xs px-2.5 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 font-semibold" data-act="cost-add" data-key="${key}">＋ 항목 추가</button>
         <button class="text-xs px-2.5 py-1 rounded-lg text-slate-400 hover:text-slate-600" data-act="cost-reset" data-key="${key}">↺ 처음 값</button>
       </div>
-      <div class="text-right"><span class="text-[11px] text-slate-400 mr-1.5">합계${vat ? ' (VAT 포함)' : ''}</span><b class="cost-total text-brand-700 text-base"></b></div>
+      <div class="text-right"><span class="text-[11px] text-slate-400 mr-1.5">합계${vat ? ' (VAT 포함' + (COST_STATUS.includes(key) ? ' · 반려 제외)' : ')') : (COST_STATUS.includes(key) ? ' (반려 제외)' : '')}</span><b class="cost-total text-brand-700 text-base"></b></div>
     </div>
   </div>`;
 
@@ -494,10 +505,11 @@ function renderInputs(key) {
 function renderCost(key) {
   const box = document.querySelector(`.cost[data-region="${key}"]`);
   const rows = S[key];
-  box.querySelector('.cost-rows').innerHTML = rows.length ? rows.map((r, i) => `
-    <tr class="border-b border-slate-100">
+  const withSt = COST_STATUS.includes(key);
+  box.querySelector('.cost-rows').innerHTML = rows.length ? rows.map((r, i) => { const st = r.status || 'review'; return `
+    <tr class="border-b border-slate-100 ${withSt && st === 'reject' ? 'opacity-50' : ''}" data-cost-row>
       <td class="py-1.5 pr-2">
-        <input class="w-full bg-transparent font-medium focus:outline-none focus:bg-slate-50 rounded px-1 -mx-1" data-bind="${key}|${i}|name" value="${esc(r.name)}" placeholder="항목명">
+        <input class="w-full bg-transparent font-medium ${withSt && st === 'reject' ? 'line-through' : ''} focus:outline-none focus:bg-slate-50 rounded px-1 -mx-1" data-bind="${key}|${i}|name" value="${esc(r.name)}" placeholder="항목명">
         <input class="w-full bg-transparent text-[11px] text-slate-400 focus:outline-none focus:bg-slate-50 rounded px-1 -mx-1" data-bind="${key}|${i}|desc" value="${esc(r.desc)}" placeholder="메모">
       </td>
       <td class="py-1.5 w-[132px] align-top">
@@ -506,16 +518,28 @@ function renderCost(key) {
           <span class="text-[11px] text-slate-400 pr-2">원</span>
         </div>
       </td>
+      ${withSt ? `<td class="py-1.5 w-[70px] align-top pl-1.5">
+        <select class="w-full rounded-lg border px-1 py-1 text-[12px] font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 ${STATUS[st][1]}" data-bind="${key}|${i}|status">
+          ${Object.entries(STATUS).map(([k, [label]]) => `<option value="${k}" ${st === k ? 'selected' : ''}>${label}</option>`).join('')}
+        </select>
+      </td>` : ''}
       <td class="py-1.5 w-[28px] align-top text-right no-print">
         <button class="h-7 w-7 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50" data-act="cost-del" data-key="${key}" data-j="${i}" title="항목 삭제">✕</button>
       </td>
-    </tr>`).join('') : '<tr><td class="py-3 text-center text-xs text-slate-400">항목이 없습니다</td></tr>';
+    </tr>`; }).join('') : '<tr><td class="py-3 text-center text-xs text-slate-400">항목이 없습니다</td></tr>';
   updateCostTotal(key);
 }
-const costSum = key => S[key].reduce((s, r) => s + (r.amt || 0), 0);
+const costSum = key => S[key].reduce((s, r) => s + (r.status === 'reject' ? 0 : r.amt || 0), 0);
 function updateCostTotal(key) {
-  const total = costSum(key);
-  document.querySelector(`.cost[data-region="${key}"] .cost-total`).textContent = won(total) + ' (' + fmt(total) + '원)';
+  const total = costSum(key), box = document.querySelector(`.cost[data-region="${key}"]`);
+  box.querySelector('.cost-total').textContent = won(total) + ' (' + fmt(total) + '원)';
+  const st = box.querySelector('.cost-st');
+  if (st) {
+    const n = k => S[key].filter(r => (r.status || 'review') === k).length;
+    const okAmt = S[key].filter(r => r.status === 'ok').reduce((s, r) => s + (r.amt || 0), 0);
+    st.innerHTML = Object.entries(STATUS).map(([k, [label, c]]) => `<span class="px-2 py-0.5 rounded-full border font-semibold ${c}">${label} <b>${n(k)}</b></span>`).join('')
+      + `<span class="text-slate-400">· 확정 금액 <b class="text-emerald-700">${won(okAmt)}</b></span>`;
+  }
   updateInvest();
 }
 // 투자 구분 — 보증금·권리금·사전 준비·파쇄석 = 피코, 풀타프·외부 시설 + 내부 장비 = 캠핏
@@ -645,7 +669,7 @@ function setPath(key, path, value) {
 
 document.addEventListener('input', e => {
   const el = e.target, bind = el.dataset.bind;
-  if (!bind) return;
+  if (!bind || live) return;
   const [key, ...path] = bind.split('|');
   if (!(key in S)) return;
   let value;
@@ -657,6 +681,13 @@ document.addEventListener('input', e => {
     value = n;
   } else value = el.value;
   setPath(key, path, value);
+  if (key.startsWith('cost:') && path[1] === 'status') {
+    Object.values(STATUS).forEach(([, c]) => el.classList.remove(...c.split(' ')));
+    el.classList.add(...STATUS[value][1].split(' '));
+    const row = el.closest('[data-cost-row]');
+    row.classList.toggle('opacity-50', value === 'reject');
+    row.querySelector('[data-bind$="|name"]').classList.toggle('line-through', value === 'reject');
+  }
   if (key.startsWith('cost:')) updateCostTotal(key);
   if (key === 'gearList') {
     const i = +path[0], r = S.gearList[i], f = path[1];
@@ -685,13 +716,13 @@ document.addEventListener('input', e => {
   queueSave(key, el.type === 'checkbox' ? 0 : 600);
 });
 document.addEventListener('click', e => {
-  const btn = e.target.closest('[data-act]'); if (!btn) return;
+  const btn = e.target.closest('[data-act]'); if (!btn || live) return;
   const key = btn.dataset.key, j = +btn.dataset.j;
   const field = btn.dataset.field || 'points';
   if (btn.dataset.act === 'pt-del') S[key][field].splice(j, 1);
   else if (btn.dataset.act === 'pt-add') (S[key][field] ||= []).push('');
   else if (btn.dataset.act === 'cost-del') S[key].splice(j, 1);
-  else if (btn.dataset.act === 'cost-add') S[key].push({ name:'', desc:'', amt:0 });
+  else if (btn.dataset.act === 'cost-add') S[key].push(COST_STATUS.includes(key) ? { name:'', desc:'', amt:0, status:'review' } : { name:'', desc:'', amt:0 });
   else if (btn.dataset.act === 'cost-reset') S[key] = clone(DEFAULTS[key]);
   else if (btn.dataset.act === 'gear-del') S.gearList.splice(j, 1);
   else if (btn.dataset.act === 'gear-up' || btn.dataset.act === 'gear-down') {
@@ -720,6 +751,7 @@ document.addEventListener('keydown', e => {
 let editing = false;
 function applyEditable() {
   document.querySelectorAll('[data-edit]').forEach(el => { el.contentEditable = editing; });
+  if (live) document.querySelectorAll('#tab-build input, #tab-build select, #tab-build textarea, #tab-build [data-act]').forEach(el => { el.disabled = true; });
 }
 function setEditing(on) {
   editing = on;
@@ -733,6 +765,7 @@ document.getElementById('edit-toggle').addEventListener('click', () => setEditin
 
 /* 탭 */
 function setTab(tab) {
+  if (tab !== 'build' && live) setVersion('current');
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('hidden', p.id !== 'tab-' + tab));
   document.querySelectorAll('.tab-btn').forEach(b => {
     const on = b.dataset.tab === tab;
@@ -745,6 +778,31 @@ document.addEventListener('click', e => {
   const a = e.target.closest('[data-goto-tab]'); if (!a) return;
   e.preventDefault(); setTab(a.dataset.gotoTab); window.scrollTo({ top: 0, behavior: 'smooth' });
 });
+
+/* 최초안 — 10/20에 저장한 공사·장비 숫자를 읽기 전용으로 보기 (공유 저장값은 그대로) */
+const SNAP_URL = 'snapshots/initial-2026-10-20.json';
+let snap = null, live = null;   // live: 최초안을 보는 동안 맡아 둔 현재안
+async function setVersion(v) {
+  if (v === 'initial' && !live) {
+    if (!snap) { try { snap = await (await fetch(SNAP_URL)).json(); } catch (e) { alert('최초안을 불러오지 못했습니다'); return; } }
+    if (editing) setEditing(false);
+    live = {};
+    Object.keys(snap.state).forEach(k => { live[k] = S[k]; S[k] = clone(snap.state[k]); });
+  } else if (v === 'current' && live) {
+    Object.assign(S, live); live = null;
+  } else return;
+  document.body.classList.toggle('snapshot', !!live);
+  renderAll(); renderVersion();
+}
+function renderVersion() {
+  document.querySelectorAll('.ver-btn').forEach(b => {
+    const on = (b.dataset.ver === 'initial') === !!live;
+    b.style.background = on ? (live ? '#d97706' : '#0d9488') : ''; b.style.color = on ? '#fff' : '#475569';
+  });
+  document.getElementById('ver-note').classList.toggle('hidden', !live);
+}
+document.querySelectorAll('.ver-btn').forEach(b => b.addEventListener('click', () => setVersion(b.dataset.ver)));
+renderVersion();
 
 /* ───────── 공유 저장 (Supabase) ───────── */
 const CFG = window.FOCUS_CONFIG || {};
@@ -760,7 +818,7 @@ function setSync(state, text) {
 }
 
 function queueSave(key, delay) {
-  if (!db) return;
+  if (!db || live) return;
   pending.add(key);
   setSync('saving', '저장 중…');
   clearTimeout(timers[key]);
@@ -780,6 +838,7 @@ function isEditingKey(key) {
 }
 function applyRemote(key, data) {
   if (!(key in DEFAULTS) || pending.has(key)) return;
+  if (live && key in live) { live[key] = data; return; }
   if (JSON.stringify(S[key]) === JSON.stringify(data)) return;
   if (isEditingKey(key)) { deferred[key] = data; return; }
   S[key] = data;
@@ -794,7 +853,7 @@ document.addEventListener('focusout', () => setTimeout(() => {
 async function loadAll() {
   const { data, error } = await db.from(TABLE).select('key,data');
   if (error) throw error;
-  data.forEach(r => { if (r.key in DEFAULTS && !pending.has(r.key)) S[r.key] = r.data; });
+  data.forEach(r => { if (r.key in DEFAULTS && !pending.has(r.key)) { if (live && r.key in live) live[r.key] = r.data; else S[r.key] = r.data; } });
 }
 
 async function start() {
