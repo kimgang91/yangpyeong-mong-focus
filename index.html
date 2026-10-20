@@ -111,7 +111,7 @@
         </div>
         <div class="mt-2 text-sm text-sky-900/80 space-y-0.5">
           <div>🔑 보증금 · 권리금 <b id="inv-pico-lease" class="float-right"></b></div>
-          <div>🛡 화재 · 책임보험 <b id="inv-pico-insure" class="float-right"></b></div>
+          <div>🧰 사전 준비 <b id="inv-pico-insure" class="float-right"></b></div>
           <div>🪨 파쇄석 공사 <b id="inv-pico-gravel" class="float-right"></b></div>
         </div>
       </div>
@@ -239,7 +239,8 @@ const DEFAULTS = {
     { name:'권리금', desc:'', amt:10000000 },
   ],
   'cost:insure': [
-    { name:'화재 · 책임보험', desc:'', amt:1500000 },
+    { name:'화재 · 책임보험', desc:'', amt:500000 },
+    { name:'사전 방역 준비', desc:'', amt:1500000 },
   ],
   'cost:gravel': [
     { name:'파쇄석(쇄석) 포설', desc:'25t 1대 70만원 × 10대', amt:7000000 },
@@ -441,7 +442,7 @@ function renderBuildCards() {
     <h2 class="font-bold text-lg flex items-center gap-2">🔑 보증금 · 권리금 <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
     ${costBox('cost:lease')}`;
   document.getElementById('insure').innerHTML = `
-    <h2 class="font-bold text-lg flex items-center gap-2">🛡 화재 · 책임보험 <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
+    <h2 class="font-bold text-lg flex items-center gap-2">🧰 사전 준비 <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
     ${costBox('cost:insure')}`;
   document.getElementById('gravel').innerHTML = `
     <div class="flex items-start justify-between gap-2">
@@ -497,7 +498,7 @@ function updateCostTotal(key) {
   document.querySelector(`.cost[data-region="${key}"] .cost-total`).textContent = won(total) + ' (' + fmt(total) + '원)';
   updateInvest();
 }
-// 투자 구분 — 보증금·권리금·보험·파쇄석 = 피코, 풀타프·외부 시설 + 내부 장비 = 캠핏
+// 투자 구분 — 보증금·권리금·사전 준비·파쇄석 = 피코, 풀타프·외부 시설 + 내부 장비 = 캠핏
 function updateInvest() {
   if (!S.gearList) return;
   const ls = costSum('cost:lease'), ins = costSum('cost:insure'), g = costSum('cost:gravel'), tp = costSum('cost:tarp'), ge = activeGear().reduce((s, r) => s + rowAmt(r), 0);
