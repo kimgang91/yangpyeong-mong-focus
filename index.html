@@ -109,7 +109,11 @@
           <div class="font-bold text-sky-900">🔵 피코 투자</div>
           <div class="text-right"><div class="text-[11px] text-sky-700">합계</div><div id="inv-pico" class="text-xl font-extrabold text-sky-900"></div></div>
         </div>
-        <div class="mt-2 text-sm text-sky-900/80">🪨 파쇄석 공사 <b id="inv-pico-gravel" class="float-right"></b></div>
+        <div class="mt-2 text-sm text-sky-900/80 space-y-0.5">
+          <div>🔑 보증금 <b id="inv-pico-deposit" class="float-right"></b></div>
+          <div>🤝 권리금 <b id="inv-pico-premium" class="float-right"></b></div>
+          <div>🪨 파쇄석 공사 <b id="inv-pico-gravel" class="float-right"></b></div>
+        </div>
       </div>
       <div class="rounded-2xl border-2 border-violet-200 bg-violet-50/70 p-4">
         <div class="flex items-center justify-between gap-2">
@@ -476,12 +480,13 @@ function updateCostTotal(key) {
   document.querySelector(`.cost[data-region="${key}"] .cost-total`).textContent = won(total) + ' (' + fmt(total) + '원)';
   updateInvest();
 }
-// 투자 구분 — 파쇄석 = 피코, 풀타프·외부 시설 + 내부 장비 = 캠핏
+// 투자 구분 — 보증금·권리금·파쇄석 = 피코, 풀타프·외부 시설 + 내부 장비 = 캠핏
+const PICO_DEPOSIT = 30000000, PICO_PREMIUM = 10000000;
 function updateInvest() {
   if (!S.gearList) return;
   const g = costSum('cost:gravel'), tp = costSum('cost:tarp'), ge = activeGear().reduce((s, r) => s + rowAmt(r), 0);
   const put = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = won(v); };
-  put('inv-pico', g); put('inv-pico-gravel', g);
+  put('inv-pico', PICO_DEPOSIT + PICO_PREMIUM + g); put('inv-pico-deposit', PICO_DEPOSIT); put('inv-pico-premium', PICO_PREMIUM); put('inv-pico-gravel', g);
   put('inv-camp', tp + ge); put('inv-camp-tarp', tp); put('inv-camp-gear', ge);
 }
 
