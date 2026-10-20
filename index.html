@@ -43,14 +43,14 @@
     <div class="flex-1">
       <div class="flex items-center gap-2 text-sm text-brand-700 font-semibold">
         <span class="inline-flex h-6 w-6 items-center justify-center rounded-md bg-brand-600 text-white text-xs">⛺</span>
-        크루캠 인 양평 몽 · 전수창업
+        <span data-t="brand">크루캠 인 양평 몽 · 전수창업</span>
       </div>
       <h1 class="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight" data-edit data-bind="header|title" data-ph="제목"></h1>
       <p class="mt-1 text-slate-500 text-sm" data-edit data-bind="header|sub" data-ph="부제"></p>
     </div>
     <div class="rounded-2xl bg-white border border-slate-200 px-4 py-3 shadow-sm md:w-64">
       <div class="flex items-baseline justify-between">
-        <span class="text-xs text-slate-500">의논 사항 결정</span>
+        <span class="text-xs text-slate-500"><span data-t="disc-label">의논 사항 결정</span></span>
         <span class="text-xl font-extrabold text-brand-700"><span id="disc-done">0</span><span class="text-slate-400 text-sm font-semibold"> / <span id="disc-total">0</span></span></span>
       </div>
       <div class="mt-2 h-1.5 rounded-full bg-slate-100 overflow-hidden"><div id="disc-bar" class="h-full bg-brand-500 transition-all" style="width:0%"></div></div>
@@ -75,7 +75,7 @@
     <section class="rounded-3xl bg-white border border-slate-200 shadow-sm p-5 sm:p-6 mb-6">
       <div class="flex items-center gap-2 mb-5">
         <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-brand-50 text-brand-700">1</span>
-        <h2 class="font-bold text-lg">이렇게 진행할 예정입니다</h2>
+        <h2 class="font-bold text-lg"><span data-t="m-plan">이렇게 진행할 예정입니다</span></h2>
       </div>
       <ol id="timeline" class="grid grid-cols-1 sm:grid-cols-7 gap-0 sm:gap-2 relative"></ol>
     </section>
@@ -84,9 +84,9 @@
       <div class="flex items-center justify-between gap-2 mb-4">
         <div class="flex items-center gap-2">
           <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800">2</span>
-          <h2 class="font-bold text-lg">오늘 의논할 사항</h2>
+          <h2 class="font-bold text-lg"><span data-t="m-disc">오늘 의논할 사항</span></h2>
         </div>
-        <span class="text-xs text-slate-400 no-print">결정 내용을 칸에 적고, 끝나면 체크</span>
+        <span class="text-xs text-slate-400 no-print"><span data-t="m-disc-hint">결정 내용을 칸에 적고, 끝나면 체크</span></span>
       </div>
       <div id="discuss" class="grid md:grid-cols-2 gap-4"></div>
     </section>
@@ -96,8 +96,8 @@
   <div id="tab-build" class="tab-panel hidden">
     <section class="rounded-3xl bg-white border border-slate-200 shadow-sm p-5 sm:p-6 mb-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
-        <h2 class="font-bold text-lg">공사 일정</h2>
-        <span class="text-xs text-slate-400">날짜가 정해지지 않은 단계는 <b class="text-slate-500">미정</b>으로 표시 · 순서는 파쇄석 → 풀타프 → 장비 비치</span>
+        <h2 class="font-bold text-lg"><span data-t="b-sched">공사 일정</span></h2>
+        <span class="text-xs text-slate-400"><span data-t="b-sched-hint">날짜가 정해지지 않은 단계는 미정으로 표시 · 순서는 파쇄석 → 풀타프 → 장비 비치</span></span>
       </div>
       <div id="tracks" class="grid lg:grid-cols-3 gap-4"></div>
     </section>
@@ -106,23 +106,23 @@
     <section class="grid sm:grid-cols-2 gap-3 mb-6">
       <div class="rounded-2xl border-2 border-sky-200 bg-sky-50/70 p-4">
         <div class="flex items-center justify-between gap-2">
-          <div class="font-bold text-sky-900">🔵 피코 투자</div>
-          <div class="text-right"><div class="text-[11px] text-sky-700">합계</div><div id="inv-pico" class="text-xl font-extrabold text-sky-900"></div></div>
+          <div class="font-bold text-sky-900"><span data-t="inv-pico-title">🔵 피코 투자</span></div>
+          <div class="text-right"><div class="text-[11px] text-sky-700"><span data-t="inv-pico-sum">합계</span></div><div id="inv-pico" class="text-xl font-extrabold text-sky-900"></div></div>
         </div>
         <div class="mt-2 text-sm text-sky-900/80 space-y-0.5">
-          <div>🔑 보증금 · 권리금 <b id="inv-pico-lease" class="float-right"></b></div>
-          <div>🧰 사전 준비 <b id="inv-pico-insure" class="float-right"></b></div>
-          <div>🪨 파쇄석 공사 <b id="inv-pico-gravel" class="float-right"></b></div>
+          <div><span data-t="inv-pico-lease-t">🔑 보증금 · 권리금</span> <b id="inv-pico-lease" class="float-right"></b></div>
+          <div><span data-t="inv-pico-insure-t">🧰 사전 준비 비용</span> <b id="inv-pico-insure" class="float-right"></b></div>
+          <div><span data-t="inv-pico-gravel-t">🪨 파쇄석 공사</span> <b id="inv-pico-gravel" class="float-right"></b></div>
         </div>
       </div>
       <div class="rounded-2xl border-2 border-violet-200 bg-violet-50/70 p-4">
         <div class="flex items-center justify-between gap-2">
-          <div class="font-bold text-violet-900">🟣 캠핏 투자</div>
-          <div class="text-right"><div class="text-[11px] text-violet-700">합계</div><div id="inv-camp" class="text-xl font-extrabold text-violet-900"></div></div>
+          <div class="font-bold text-violet-900"><span data-t="inv-camp-title">🟣 캠핏 투자</span></div>
+          <div class="text-right"><div class="text-[11px] text-violet-700"><span data-t="inv-camp-sum">합계</span></div><div id="inv-camp" class="text-xl font-extrabold text-violet-900"></div></div>
         </div>
         <div class="mt-2 text-sm text-violet-900/80 space-y-0.5">
-          <div>⛺ 풀타프 · 외부 시설 <span class="text-[11px] opacity-70">(VAT 포함)</span> <b id="inv-camp-tarp" class="float-right"></b></div>
-          <div>🛋 내부 장비 리스트 <b id="inv-camp-gear" class="float-right"></b></div>
+          <div><span data-t="inv-camp-tarp-t">⛺ 풀타프 · 외부 시설 (VAT 포함)</span> <b id="inv-camp-tarp" class="float-right"></b></div>
+          <div><span data-t="inv-camp-gear-t">🛋 내부 장비 리스트</span> <b id="inv-camp-gear" class="float-right"></b></div>
         </div>
       </div>
     </section>
@@ -140,8 +140,8 @@
     <section class="rounded-3xl bg-white border border-slate-200 border-t-4 border-t-violet-400 shadow-sm p-5 sm:p-6">
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
         <div>
-          <h2 class="font-bold text-lg flex items-center gap-2">🛋 내부 장비 리스트 <span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span></h2>
-          <p class="text-xs text-slate-500 mt-0.5">구매 링크를 붙이면 상품 사진·이름을 눌러 판매 페이지로 이동 · 상태는 확정 / 검토 / 반려 · 1세트 선주문 → 현장 검증 → 추가 발주</p>
+          <h2 class="font-bold text-lg flex items-center gap-2"><span data-t="gear-title">🛋 내부 장비 리스트</span> <span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span></h2>
+          <p class="text-xs text-slate-500 mt-0.5"><span data-t="gear-desc">구매 링크를 붙이면 상품 사진·이름을 눌러 판매 페이지로 이동 · 상태는 확정 / 검토 / 반려 · 1세트 선주문 → 현장 검증 → 추가 발주</span></p>
         </div>
         <div class="flex gap-2 text-xs">
           <span class="px-2.5 py-1 rounded-full bg-teal-50 text-teal-800 font-semibold">상시 비치 <span id="sum-fixed"></span></span>
@@ -252,6 +252,7 @@ const DEFAULTS = {
     { name:'프레임형 풀타프 추가', desc:'399.96만원(VAT 포함) × 2동 · 구역 확장 후', amt:7999200 },
     { name:'1.5×6m 모듈형 울타리', desc:'4개 필요 · VAT 포함', amt:2640000 },
   ],
+  texts: {},   // 고정 문구를 화면에서 고친 값 — 없으면 기본 문구
   tiles: { area:'약 900평', thick:'5cm', design:'기본형 확정', qty:'6동 + 2동' },
   fields: { gVendor:'', gQuote:'', gDate:'', tColor:'', tMaterial:'', tDate:'' },
 };
@@ -325,6 +326,18 @@ const TRACKS = [
 
 
 
+/* ───────── 문구 편집 — 고친 값은 S.texts, 기본 문구는 TDEF ───────── */
+const TDEF = {};
+const txt = id => S.texts?.[id] ?? TDEF[id] ?? '';
+const T = (id, def) => { TDEF[id] = def; return `<span data-edit data-bind="texts|${id}" data-ph="${esc(def)}">${esc(txt(id))}</span>`; };
+document.querySelectorAll('[data-t]').forEach(el => {
+  const id = el.dataset.t; TDEF[id] = el.textContent;
+  el.dataset.edit = ''; el.dataset.bind = 'texts|' + id; el.dataset.ph = el.textContent;
+});
+function renderTexts() {
+  document.querySelectorAll('[data-bind^="texts|"]').forEach(el => { el.textContent = txt(el.dataset.bind.slice(6)); });
+}
+
 /* ───────── 렌더링 ───────── */
 function renderHeader() {
   document.querySelectorAll('[data-bind^="header|"]').forEach(el => { el.textContent = S.header[el.dataset.bind.split('|')[1]] || ''; });
@@ -363,8 +376,8 @@ function discCard(idx) {
   const def = DISC_DEFAULTS[idx], key = 'disc:' + def.id, d = S[key];
   const lists = def.wide
     ? `<div class="mt-2 grid md:grid-cols-2 gap-x-8 gap-y-3">
-        <div class="flex flex-col"><div class="text-xs font-bold text-slate-500 mt-1">${esc(def.label)}</div>${pointList(key, 'points', d.points || [])}</div>
-        <div class="flex flex-col md:border-l md:border-slate-100 md:pl-8"><div class="text-xs font-bold text-slate-500 mt-1">${esc(def.label2)}</div>${pointList(key, 'points2', d.points2 || [])}</div>
+        <div class="flex flex-col"><div class="text-xs font-bold text-slate-500 mt-1">${T(`disc:${def.id}:label`, def.label)}</div>${pointList(key, 'points', d.points || [])}</div>
+        <div class="flex flex-col md:border-l md:border-slate-100 md:pl-8"><div class="text-xs font-bold text-slate-500 mt-1">${T(`disc:${def.id}:label2`, def.label2)}</div>${pointList(key, 'points2', d.points2 || [])}</div>
       </div>`
     : `<div class="flex flex-col mt-1">${pointList(key, 'points', d.points || [])}</div>`;
   return `<article class="disc ${d.done ? 'disc-done' : ''} ${def.wide ? 'md:col-span-2' : ''} rounded-3xl shadow-sm p-5 h-full bg-white border border-slate-200 flex flex-col transition-colors" data-region="${key}">
@@ -402,30 +415,30 @@ function updateDiscCount() {
 }
 
 function renderTracks() {
-  document.getElementById('tracks').innerHTML = TRACKS.map(tr => `
+  document.getElementById('tracks').innerHTML = TRACKS.map((tr, ti) => `
     <div class="rounded-2xl bg-slate-50 border border-slate-200 border-t-4 ${tr.inv === 'pico' ? 'border-t-sky-400' : 'border-t-violet-400'} p-4">
       <div class="flex items-center justify-between mb-3">
-        <h3 class="font-bold flex items-center gap-1.5">${tr.icon} ${tr.title} ${tr.inv === 'pico' ? '<span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span>' : '<span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span>'}</h3>
+        <h3 class="font-bold flex items-center gap-1.5">${T(`trk:${ti}:title`, tr.icon + ' ' + tr.title)} ${tr.inv === 'pico' ? '<span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span>' : '<span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span>'}</h3>
       </div>
       <ol class="relative ml-1.5 border-l-2 border-slate-200 space-y-3">
-        ${tr.steps.map(s => {
+        ${tr.steps.map((s, si) => {
           const tbd = s.date === '미정';
           const dot = s.goal ? 'bg-brand-600 ring-4 ring-brand-100' : s.done ? 'bg-slate-400' : tbd ? 'bg-white border-2 border-dashed border-slate-400' : 'bg-white border-2 border-brand-600';
           return `<li class="pl-4 relative">
             <span class="absolute -left-[7px] top-1 h-3 w-3 rounded-full ${dot}"></span>
-            <div class="text-xs font-bold ${tbd ? 'text-amber-600' : s.goal ? 'text-brand-700' : 'text-slate-500'}">${esc(s.date)}</div>
-            <div class="text-[13.5px] leading-snug ${s.goal ? 'font-bold' : ''} ${s.done ? 'text-slate-500' : ''}">${s.done ? '✓ ' : ''}${esc(s.text)}</div>
+            <div class="text-xs font-bold ${tbd ? 'text-amber-600' : s.goal ? 'text-brand-700' : 'text-slate-500'}">${T(`trk:${ti}:${si}:date`, s.date)}</div>
+            <div class="text-[13.5px] leading-snug ${s.goal ? 'font-bold' : ''} ${s.done ? 'text-slate-500' : ''}">${s.done ? '✓ ' : ''}${T(`trk:${ti}:${si}:text`, s.text)}</div>
           </li>`; }).join('')}
       </ol>
     </div>`).join('');
 }
 
-const tile = (label, bind) => `<label class="block rounded-xl bg-slate-50 p-2.5 cursor-text ring-1 ring-transparent hover:ring-slate-300 focus-within:ring-2 focus-within:ring-brand-500 focus-within:bg-white transition">
-  <div class="text-[11px] text-slate-500">${label} <span class="no-print text-slate-300">✎</span></div>
-  <input data-bind="${bind}" class="w-full bg-transparent text-center font-extrabold focus:outline-none"></label>`;
-const fixedTile = (label, val) => `<div class="rounded-xl bg-slate-50 p-2.5"><div class="text-[11px] text-slate-500">${label}</div><div class="font-extrabold text-brand-700">${val}</div></div>`;
-const field = (label, bind, ph) => `<label class="block"><span class="text-[11px] text-slate-500">${label}</span>
-  <input data-bind="${bind}" placeholder="${ph}" class="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white"></label>`;
+const tile = (label, bind) => `<div class="block rounded-xl bg-slate-50 p-2.5 cursor-text ring-1 ring-transparent hover:ring-slate-300 focus-within:ring-2 focus-within:ring-brand-500 focus-within:bg-white transition">
+  <div class="text-[11px] text-slate-500">${T('tile:' + bind.replace('|', ':'), label)} <span class="no-print text-slate-300">✎</span></div>
+  <input data-bind="${bind}" class="w-full bg-transparent text-center font-extrabold focus:outline-none"></div>`;
+const fixedTile = (id, label, val) => `<div class="rounded-xl bg-slate-50 p-2.5"><div class="text-[11px] text-slate-500">${T(id + ':label', label)}</div><div class="font-extrabold text-brand-700">${T(id + ':val', val)}</div></div>`;
+const field = (label, bind, ph) => `<div class="block"><span class="text-[11px] text-slate-500">${T('field:' + bind.replace('|', ':'), label)}</span>
+  <input data-bind="${bind}" placeholder="${ph}" class="mt-0.5 w-full rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white"></div>`;
 const costBox = (key, vat) => `<div class="cost mt-3" data-region="${key}">
     <table class="w-full text-sm"><tbody class="cost-rows"></tbody></table>
     <div class="flex items-center justify-between pt-2.5 border-t border-slate-200 mt-1">
@@ -439,30 +452,30 @@ const costBox = (key, vat) => `<div class="cost mt-3" data-region="${key}">
 
 function renderBuildCards() {
   document.getElementById('lease').innerHTML = `
-    <h2 class="font-bold text-lg flex items-center gap-2">🔑 보증금 · 권리금 <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
+    <h2 class="font-bold text-lg flex items-center gap-2">${T('lease:title', '🔑 보증금 · 권리금')} <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
     ${costBox('cost:lease')}`;
   document.getElementById('insure').innerHTML = `
-    <h2 class="font-bold text-lg flex items-center gap-2">🧰 사전 준비 <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
+    <h2 class="font-bold text-lg flex items-center gap-2">${T('insure:title', '🧰 사전 준비 비용')} <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
     ${costBox('cost:insure')}`;
   document.getElementById('gravel').innerHTML = `
     <div class="flex items-start justify-between gap-2">
-      <h2 class="font-bold text-lg flex items-center gap-2">🪨 파쇄석 공사 <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
-      <span class="text-xs px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-semibold">업체 섭외 중</span>
+      <h2 class="font-bold text-lg flex items-center gap-2">${T('gravel:title', '🪨 파쇄석 공사')} <span class="inv-pico text-[11px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">피코 투자</span></h2>
+      <span class="text-xs px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-semibold">${T('gravel:status', '업체 섭외 중')}</span>
     </div>
-    <div class="mt-3 grid grid-cols-3 gap-2 text-center">${tile('면적', 'tiles|area')}${tile('두께', 'tiles|thick')}${fixedTile('완료 목표', '10/30')}</div>
+    <div class="mt-3 grid grid-cols-3 gap-2 text-center">${tile('면적', 'tiles|area')}${tile('두께', 'tiles|thick')}${fixedTile('gravel:goal', '완료 목표', '10/30')}</div>
     ${costBox('cost:gravel')}
     <div class="mt-4 grid sm:grid-cols-3 gap-2">${field('업체명', 'fields|gVendor', '여주 인근')}${field('견적 금액', 'fields|gQuote', '원')}${field('공사 일정', 'fields|gDate', '예: 10/27~10/29')}</div>
-    <p class="mt-3 text-[12px] text-slate-500">견적 때 확인: 운반비·부가세 포함 여부 · 파쇄석 규격 · 25t 트럭 진입 가능 여부 · 하자 보수</p>`;
+    <p class="mt-3 text-[12px] text-slate-500">${T('gravel:note', '견적 때 확인: 운반비·부가세 포함 여부 · 파쇄석 규격 · 25t 트럭 진입 가능 여부 · 하자 보수')}</p>`;
   document.getElementById('tarp').innerHTML = `
     <div class="flex items-start justify-between gap-2">
-      <h2 class="font-bold text-lg flex items-center gap-2">⛺ 풀타프 · 외부 시설 <span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span> <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">VAT 포함</span></h2>
-      <span class="text-xs px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-semibold">컬러 미정</span>
+      <h2 class="font-bold text-lg flex items-center gap-2">${T('tarp:title', '⛺ 풀타프 · 외부 시설')} <span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span> <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">${T('tarp:vat', 'VAT 포함')}</span></h2>
+      <span class="text-xs px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-semibold">${T('tarp:status', '컬러 미정')}</span>
     </div>
     <div class="no-print mt-3 flex flex-wrap gap-2">${mediaBtn('drawing')}${mediaBtn('khaki')}</div>
-    <div class="mt-3 grid grid-cols-3 gap-2 text-center">${tile('설계', 'tiles|design')}${tile('수량', 'tiles|qty')}${fixedTile('설치 목표', '11/1')}</div>
+    <div class="mt-3 grid grid-cols-3 gap-2 text-center">${tile('설계', 'tiles|design')}${tile('수량', 'tiles|qty')}${fixedTile('tarp:goal', '설치 목표', '11/1')}</div>
     ${costBox('cost:tarp', true)}
     <div class="mt-4 grid sm:grid-cols-3 gap-2">${field('스킨 컬러', 'fields|tColor', '미정')}${field('세부 재질', 'fields|tMaterial', '미정')}${field('설치일', 'fields|tDate', '11/1 목표')}</div>
-    <p class="mt-3 text-[12px] text-slate-500">10/21 시호이엔씨 현장 검토 때 확인: 설치·운송·고정 포함 여부 · 방염 확인서 · 파쇄석 완료 후 설치</p>`;
+    <p class="mt-3 text-[12px] text-slate-500">${T('tarp:note', '10/21 시호이엔씨 현장 검토 때 확인: 설치·운송·고정 포함 여부 · 방염 확인서 · 파쇄석 완료 후 설치')}</p>`;
   renderInputs('tiles'); renderInputs('fields');
   renderCost('cost:lease'); renderCost('cost:insure'); renderCost('cost:gravel'); renderCost('cost:tarp');
 }
@@ -608,10 +621,11 @@ function renderKey(key) {
   else if (key.startsWith('cost:')) renderCost(key);
   else if (key === 'tiles' || key === 'fields') renderInputs(key);
   else if (key === 'gearList') renderGear();
+  else if (key === 'texts') renderTexts();
   applyEditable();
 }
 function renderAll() {
-  renderHeader(); renderTimeline(); renderDiscuss(); renderTracks(); renderBuildCards(); renderGear(); applyEditable();
+  renderHeader(); renderTimeline(); renderDiscuss(); renderTracks(); renderBuildCards(); renderGear(); renderTexts(); applyEditable();
 }
 
 /* ───────── 편집 → 상태 ───────── */
@@ -717,8 +731,6 @@ function setTab(tab) {
     const on = b.dataset.tab === tab;
     b.style.background = on ? '#0d9488' : ''; b.style.color = on ? '#fff' : '#475569';
   });
-  document.getElementById('edit-toggle').classList.toggle('hidden', tab !== 'meeting');
-  if (tab !== 'meeting' && editing) setEditing(false);
   history.replaceState(null, '', '#' + tab);
 }
 document.querySelectorAll('.tab-btn').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
