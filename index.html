@@ -220,7 +220,7 @@ const DISC_DEFAULTS = [
   { id:'cost', icon:'💳', title:'캠핏 비용처리 어떻게?',
     points:['공사·풀타프·장비 비용을 누가 부담할지', '발주·결제 명의와 세금계산서 처리', '지출 승인 기준 · 증빙 관리 방법'] },
   { id:'tarp', icon:'⛺', title:'풀타프 최종 스펙 및 컬러',
-    points:['기본형 설계는 확정 — 세부 스펙(4.5x6m) 최종 확인', '스킨 컬러(카키) 결정 — 전달 전까지 시호이엔씨 진행 불가', '1차 6동 설치 → 구역 확장 후 2동 추가 설치 (총 8동)', '11/1 1차 설치 일정 시호이엔씨와 확정'] },
+    points:['기본형 설계는 확정 — 세부 스펙(4.5x6m) 최종 확인', '스킨 컬러(진 그린 / 블랙) 결정 — 전달 전까지 시호이엔씨 진행 불가', '1차 6동 설치 → 구역 확장 후 2동 추가 설치 (총 8동)', '11/1 1차 설치 일정 시호이엔씨와 확정'] },
   { id:'gear', icon:'🛋', title:'최종 세팅 장비',
     points:['김경수 정리 구매 리스트 검토', '구역마다 상시 비치할 품목 확정', '대여용으로 둘 품목 구분'] },
   { id:'set1', icon:'📦', title:'장비 1세트 구매 · 검증 후 추가 발주',
@@ -304,16 +304,25 @@ const MEDIA = {
     { label:'① 위성 실측 배치', src:'assets/site-layout-1-satellite.jpg', cap:'위성사진 위 실측 배치 · 1~8구역 · 구역별 풀타프존 6×4.5m' },
     { label:'② 3D 조감도', src:'assets/site-layout-2-3d.jpg', cap:'같은 배치를 3D로 본 모습 · 구역마다 풀타프 1동' },
   ] },
-  khaki:   { src:'assets/tarp-color-khaki.jpg', title:'🎨 스킨 컬러 예시 — 카키', cap:'카키 컬러 참고 이미지' },
+  green:   { src:'assets/tarp-color-darkgreen.jpg', title:'🎨 스킨 컬러 예시 — 진 그린', cap:'진 그린 컬러 참고 이미지' },
+  black:   { src:'assets/tarp-color-black.jpg', title:'🎨 스킨 컬러 예시 — 블랙', cap:'블랙 컬러 참고 이미지' },
+  design:  { title:'🏠 풀타프 디자인', pages:[
+    { label:'① 외관', src:'assets/tarp-design-1-exterior.jpg', cap:'풀타프 외관 디자인 참고 이미지' },
+    { label:'② 내부', src:'assets/tarp-design-2-interior.jpg', cap:'풀타프 내부 디자인 참고 이미지' },
+  ] },
 };
-const ATTACH = { tarp: ['drawing', 'khaki'] };   // 의논 사항 카드 id → 첨부
+const ATTACH = { tarp: ['drawing', 'design', 'green', 'black'] };   // 의논 사항 카드 id → 첨부
 const REFS = { fee: [{ tab:'build', label:'🏗 공사 일정 · 투자 내역 보기', sub:'피코 · 캠핏 투자' }] };   // 의논 사항 카드 id → 참고 링크 (tab = 이 페이지의 탭)
 const refBtn = r => `<a href="${r.tab ? '#' + r.tab : esc(r.url)}" ${r.tab ? `data-goto-tab="${r.tab}"` : 'target="_blank" rel="noopener noreferrer"'} class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-brand-50 text-brand-900 border border-brand-100 hover:bg-brand-100">${esc(r.label)} <span class="font-normal opacity-75">${esc(r.sub)}</span> ${r.tab ? '→' : '↗'}</a>`;
 const mediaBtn = id => id === 'layout'
   ? `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100" data-media="layout">🗺 배치(안) 보기 <span class="font-normal text-amber-600">10/13 실측</span></button>`
   : id === 'drawing'
   ? `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 hover:bg-sky-100" data-media="drawing">📐 도면 보기 <span class="font-normal text-sky-600">4.5×6m</span></button>`
-  : `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-[#eef0e6] text-[#4b5320] border border-[#c9cdb4] hover:bg-[#e3e6d6]" data-media="khaki"><span class="h-3 w-3 rounded-full bg-[#5b6146] ring-1 ring-black/10"></span>컬러 예시 <span class="font-normal opacity-75">카키</span></button>`;
+  : id === 'design'
+  ? `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-stone-50 text-stone-800 border border-stone-200 hover:bg-stone-100" data-media="design">🏠 디자인 보기 <span class="font-normal text-stone-500">외관 · 내부</span></button>`
+  : id === 'green'
+  ? `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-[#e8eee9] text-[#1f3a2b] border border-[#bfcdc3] hover:bg-[#dbe4dd]" data-media="green"><span class="h-3 w-3 rounded-full bg-[#2f4a3a] ring-1 ring-black/10"></span>컬러 예시 <span class="font-normal opacity-75">진 그린</span></button>`
+  : `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-900 border border-slate-300 hover:bg-slate-200" data-media="black"><span class="h-3 w-3 rounded-full bg-[#1a1a1a] ring-1 ring-black/10"></span>컬러 예시 <span class="font-normal opacity-75">블랙</span></button>`;
 
 const TRACKS = [
   { icon:'🪨', title:'파쇄석', inv:'pico', steps:[
@@ -489,7 +498,7 @@ function renderBuildCards() {
       <h2 class="font-bold text-lg flex items-center gap-2">${T('tarp:title', '⛺ 풀타프 · 외부 시설')} <span class="inv-camp text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">캠핏 투자</span> <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">${T('tarp:vat', 'VAT 포함')}</span></h2>
       <span class="text-xs px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-semibold">${T('tarp:status', '컬러 미정')}</span>
     </div>
-    <div class="no-print mt-3 flex flex-wrap gap-2">${mediaBtn('layout')}${mediaBtn('drawing')}${mediaBtn('khaki')}</div>
+    <div class="no-print mt-3 flex flex-wrap gap-2">${mediaBtn('layout')}${mediaBtn('drawing')}${mediaBtn('design')}${mediaBtn('green')}${mediaBtn('black')}</div>
     <div class="mt-3 grid grid-cols-3 gap-2 text-center">${tile('설계', 'tiles|design')}${tile('수량', 'tiles|qty')}${fixedTile('tarp:goal', '설치 목표', '11/1')}</div>
     ${costBox('cost:tarp', true)}
     <div class="mt-4 grid sm:grid-cols-3 gap-2">${field('스킨 컬러', 'fields|tColor', '미정')}${field('세부 재질', 'fields|tMaterial', '미정')}${field('설치일', 'fields|tDate', '11/1 목표')}</div>
