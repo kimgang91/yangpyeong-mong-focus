@@ -330,13 +330,14 @@ const mediaBtn = id => id === 'layout'
   ? `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-[#fbfaf5] text-slate-700 border border-[#e4e1d6] hover:bg-[#f3f1e8]" data-media="ivory"><span class="h-3 w-3 rounded-full bg-[#f4f2ea] ring-1 ring-black/20"></span>컬러 예시 <span class="font-normal opacity-75">아이보리</span></button>`
   : `<button class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-[#f7f1e6] text-[#6b5a3e] border border-[#e3d6bd] hover:bg-[#efe6d4]" data-media="beige"><span class="h-3 w-3 rounded-full bg-[#e2d2b4] ring-1 ring-black/10"></span>컬러 예시 <span class="font-normal opacity-75">베이지</span></button>`;
 
-const TRACKS = [
+const TRACKS = [   // 단계 k = 저장된 문구 키 (중간에 단계를 끼워 넣어도 기존 수정 문구가 밀리지 않게)
   { icon:'🪨', title:'파쇄석', inv:'pico', steps:[
     { date:'10/19', text:'여주 인근 업체 섭외 · 단가/일정/추가비용 확인' },
     { date:'10/21', text:'현장 견적 미팅 (수요일 방문 때)' },
     { date:'미정',  text:'업체 확정 · 계약' },
     { date:'미정',  text:'공사 착수 (정지 → 파쇄석 → 석분 · 다짐)' },
-    { date:'10/30', text:'공사 완료', goal:true },
+    { date:'미정',  text:'국유지 승인을 위한 공사 — 땅주인 측 진행', k:'landowner' },
+    { date:'10/30', text:'공사 완료', goal:true, k:4 },
   ] },
   { icon:'⛺', title:'풀타프', inv:'camp', steps:[
     { date:'완료',  text:'기본형 설계 확정', done:true },
@@ -456,8 +457,8 @@ function renderTracks() {
           const dot = s.goal ? 'bg-brand-600 ring-4 ring-brand-100' : s.done ? 'bg-slate-400' : tbd ? 'bg-white border-2 border-dashed border-slate-400' : 'bg-white border-2 border-brand-600';
           return `<li class="pl-4 relative">
             <span class="absolute -left-[7px] top-1 h-3 w-3 rounded-full ${dot}"></span>
-            <div class="text-xs font-bold ${tbd ? 'text-amber-600' : s.goal ? 'text-brand-700' : 'text-slate-500'}">${T(`trk:${ti}:${si}:date`, s.date)}</div>
-            <div class="text-[13.5px] leading-snug ${s.goal ? 'font-bold' : ''} ${s.done ? 'text-slate-500' : ''}">${s.done ? '✓ ' : ''}${T(`trk:${ti}:${si}:text`, s.text)}</div>
+            <div class="text-xs font-bold ${tbd ? 'text-amber-600' : s.goal ? 'text-brand-700' : 'text-slate-500'}">${T(`trk:${ti}:${s.k ?? si}:date`, s.date)}</div>
+            <div class="text-[13.5px] leading-snug ${s.goal ? 'font-bold' : ''} ${s.done ? 'text-slate-500' : ''}">${s.done ? '✓ ' : ''}${T(`trk:${ti}:${s.k ?? si}:text`, s.text)}</div>
           </li>`; }).join('')}
       </ol>
     </div>`).join('');
